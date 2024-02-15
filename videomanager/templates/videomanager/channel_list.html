@@ -1,0 +1,22 @@
+{% extends "videomanager/base.html" %}
+
+{% block stylesheets %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'videomanager/del.css' %}">
+{% endblock %}
+
+{% block maincontent %}
+    <p class="delete">Channels:</p>
+    {% if channel_list %}
+        <ul>
+            {% for channel in channel_list %}
+                {#            <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li> og#}
+                {#            <li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li> modified#}
+                {#            with namespacing #}
+                <li><a href="{% url 'videomanager:channel' channel.channel_id %}">{{ channel.name }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No channels available</p>
+    {% endif %}
+{% endblock %}
