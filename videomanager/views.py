@@ -1,10 +1,11 @@
 from django.shortcuts import render, get_list_or_404, get_object_or_404
 
+from .content import Content
 from .models import Channel, Video, Playlist
 
 # Create your views here.
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 
 # call this view through urls
@@ -35,4 +36,11 @@ def video(request, video_id):
 
 
 def add(request):
-    return HttpResponse("Ok")
+
+    if request.method == 'POST':
+        url = request.POST.get('url')
+        print('Posted url:', url)
+        content = Content(url)
+        return JsonResponse({"url": url, "initial_info": content.info})
+
+    return render(request, 'videomanager/add.html')

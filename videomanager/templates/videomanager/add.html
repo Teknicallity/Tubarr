@@ -1,14 +1,38 @@
 {% extends "videomanager/base.html" %}
+{% load static %}
 
-{% block stylesheets %}{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'videomanager/stylesheets/add.css' %}">
+{% endblock %}
 
 {% block maincontent %}
 
-<form>
-{% csrf_token %}
+    {#<form id="contentInputForm" method="POST" action="{% url 'videomanager:add' %}">#}
+    <form id="content_input_form" method="POST">
+        {% csrf_token %}
 
-<h2>Add Content</h2>
+        <h2>Add Content</h2>
+        <label>
+            <input type="text" placeholder="URL" name="URL" id="url_input">
+            <button type="submit">Submit</button>
+        </label>
+    </form>
 
-</form>
+    <div id="input_url_display"></div>
+    <div class="confirmation">
+        <form id="confirmation_form" method="POST">
+            {% csrf_token %}
+            <div id="confirmation_input"></div>
+        </form>
+    </div>
+    <div id="content_info">
+
+    </div>
+
+    <script>
+        let add_url = {% url 'videomanager:add' %};
+        let csrf = {{ csrf_token }};
+    </script>
+    <script src="{% static 'videomanager/javascript/add.js' %}"></script>
 
 {% endblock %}
