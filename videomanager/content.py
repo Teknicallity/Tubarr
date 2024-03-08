@@ -1,9 +1,12 @@
+import os.path
 import re
 from urllib.parse import urlparse, parse_qs
 from enum import Enum
 import yt_dlp
+import json
 
 
+# download_archive: file
 # --download-archive FILE Download only videos not listed in the archive file.
 # Record the IDs of all downloaded videos in it
 
@@ -12,6 +15,7 @@ import yt_dlp
 # forceprint:
 # ffmpeg_location:
 
+
 class _URLType(Enum):
     CHANNEL = 1
     VIDEO = 2
@@ -19,7 +23,7 @@ class _URLType(Enum):
     UNKNOWN = 4
 
 
-def temp_grab_json() -> yt_dlp.YoutubeDL:
+def initial_ydl_opts() -> yt_dlp.YoutubeDL:
     ydl_opts = {
         'restrictfilenames': True,
         'forceprint': True,
@@ -31,58 +35,91 @@ def temp_grab_json() -> yt_dlp.YoutubeDL:
 
 class Content:
     def __init__(self, url: str):
-        # self.video_title = None
-        # self.video_id = None
-        # self.video_description = None
-        # self.video_categories = None
-        # self.video_tags = None
-        # self.channel_id = None
-        # self.channel_name = None
-        # self.thumbnail_url = None
-        # self.playlist_id = None
-        # self.playlist_name = None
-        # self.channel_pic = None
-        # self.upload_date = None
+        self.url = url
+
+        self.video_title = None
+        self.video_id = None
+        self.video_description = None
+        self.video_categories = None
+        self.video_tags = None
+        self.channel_id = None
+        self.channel_name = None
+        self.channel_pic = None
+        self.thumbnail_url = None
+        self.playlist_id = None
+        self.playlist_name = None
+        self.upload_date = None
+
+        self.content_type = None
+        self.filename = None
         self.info: dict = {}
 
         """Parses the url"""
         if _is_valid_url(url):
-            ydl = temp_grab_json()
-            tag = _parse_url(url)
-            match tag:
+            ydl = initial_ydl_opts()
+            self.content_type = _parse_content_type(url)
+
+            match self.content_type:
                 case _URLType.CHANNEL:
                     print("channel")
+
                 case _URLType.VIDEO:
                     print("Video")
-                    """
-                    Grab:
-                    id
-                    title
-                    thumbnail
-                    description
-                    channel_id
-                    categories
-                    tags
-                    upload_date
-                    original_url
-                    """
                     info_dict = ydl.extract_info(url, download=False)
-                    self.info = {
-                        'type': 'video',
-                        'video_id': info_dict['id'],
-                        'video_title': info_dict['title'],
-                        'thumbnail_url': info_dict['thumbnail'],
-                        'video_description': info_dict['description'],
-                        'channel_id': info_dict['channel_id'],
-                        'video_categories': info_dict['categories'],
-                        'video_tags': info_dict['tags'],
-                        'channel_name': info_dict['channel'],
-                        'upload_date': info_dict['upload_date']
-                    }
+                    self.video_title = info_dict['title']
+                    self.video_id = info_dict['id']
+                    self.video_description = info_dict['description']
+                    self.video_categories = info_dict['categories']
+                    self.video_tags = info_dict['tags']
+                    self.channel_id = info_dict['channel_id']
+                    self.channel_name = info_dict['channel']
+                    self.thumbnail_url = info_dict['thumbnail']
+                    self.upload_date = info_dict['upload_date']
+
                 case _URLType.PLAYLIST:
                     print("playlist")
+
                 case _:
                     print("error")
+
+    def get_json_info(self) -> str:
+        info = {
+            'type': self.content_type,
+            'video_title': self.video_title,
+            'video_id': self.video_id,
+            'video_description': self.video_description,
+            'video_categories': self.video_categories,
+            'video_tags': self.video_tags,
+            'channel_id': self.channel_id,
+            'channel_name': self.channel_name,
+            'thumbnail_url': self.thumbnail_url,
+            'playlist_id': self.playlist_id,
+            'playlist_name': self.playlist_name,
+            'channel_pic': self.channel_pic,
+            'upload_date': self.upload_date,
+        }
+        return json.dumps(info)
+
+    def download(self, videos_dir, config_dir):
+        ydl = self.get_download_ytdl(videos_dir, config_dir)
+        ydl.download(self.url)
+
+    def get_download_ytdl(self, videos_dir, config_dir) -> yt_dlp.YoutubeDL:
+        ydl_opts = {
+            'restrictfilenames': True,
+            'forceprint': True,
+            'format': 'best',
+            'quiet': True,
+            'progress_hooks': [self.ytdl_hook],
+            'outtmpl': os.path.join(videos_dir, self.channel_id, '%(title)s-[%(id)s].%(ext)s'),
+            'download_archive': os.path.join(config_dir, 'ytdlp', 'downloaded.txt'),
+        }
+        return yt_dlp.YoutubeDL(ydl_opts)
+
+    def ytdl_hook(self, d):
+        if d['status'] == 'finished':
+            if d['info_dict']:
+                self.filename = d['info_dict']['_filename']
 
 
 def _is_valid_url(url: str) -> bool:
@@ -99,7 +136,7 @@ def _is_valid_url(url: str) -> bool:
     # return True if re.search(pattern, url) else False
 
 
-def _parse_url(url: str) -> _URLType:
+def _parse_content_type(url: str) -> _URLType:
     parsed_url = urlparse(url)
     query_params = parse_qs(parsed_url.query)
     if parsed_url.path.startswith('/channel/'):
