@@ -52,12 +52,14 @@ class Content:
 
         self.content_type = None
         self.filename = None
+        self.download_path = None
         self.info: dict = {}
 
+    def fill_info(self):
         """Parses the url"""
-        if _is_valid_url(url):
+        if _is_valid_url(self.url):
             ydl = initial_ydl_opts()
-            self.content_type = _parse_content_type(url)
+            self.content_type = _parse_content_type(self.url)
 
             match self.content_type:
                 case _URLType.CHANNEL:
@@ -65,7 +67,7 @@ class Content:
 
                 case _URLType.VIDEO:
                     print("Video")
-                    info_dict = ydl.extract_info(url, download=False)
+                    info_dict = ydl.extract_info(self.url, download=False)
                     self.video_title = info_dict['title']
                     self.video_id = info_dict['id']
                     self.video_description = info_dict['description']
@@ -82,7 +84,7 @@ class Content:
                 case _:
                     print("error")
 
-    def get_json_info(self) -> str:
+    def _get_json_info(self) -> str:
         info = {
             'type': self.content_type,
             'video_title': self.video_title,
@@ -100,23 +102,27 @@ class Content:
         }
         return json.dumps(info)
 
-    def download(self, videos_dir, config_dir):
-        ydl = self.get_download_ytdl(videos_dir, config_dir)
+    def download(self, videos_dir, config_dir) -> (str, str):
+        self.download_path = os.path.join(videos_dir, self.channel_id)
+
+        ydl = self._get_download_opts(config_dir)
         ydl.download(self.url)
 
-    def get_download_ytdl(self, videos_dir, config_dir) -> yt_dlp.YoutubeDL:
+        return self.download_path, self.filename
+
+    def _get_download_opts(self, config_dir) -> yt_dlp.YoutubeDL:
         ydl_opts = {
             'restrictfilenames': True,
             'forceprint': True,
             'format': 'best',
-            'quiet': True,
-            'progress_hooks': [self.ytdl_hook],
-            'outtmpl': os.path.join(videos_dir, self.channel_id, '%(title)s-[%(id)s].%(ext)s'),
+            # 'quiet': True,
+            'progress_hooks': [self._ytdl_hook],
+            'outtmpl': os.path.join(self.download_path, '%(title)s-[%(id)s].%(ext)s'),
             'download_archive': os.path.join(config_dir, 'ytdlp', 'downloaded.txt'),
         }
         return yt_dlp.YoutubeDL(ydl_opts)
 
-    def ytdl_hook(self, d):
+    def _ytdl_hook(self, d):
         if d['status'] == 'finished':
             if d['info_dict']:
                 self.filename = d['info_dict']['_filename']

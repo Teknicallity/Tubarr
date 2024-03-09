@@ -1,11 +1,12 @@
 from django.shortcuts import render, get_list_or_404, get_object_or_404
+from django.urls import reverse
 
 from .content import Content
 from .models import Channel, Video, Playlist
 
 # Create your views here.
 
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 
 
 # call this view through urls
@@ -36,11 +37,21 @@ def video(request, video_id):
 
 
 def add(request):
-
     if request.method == 'POST':
         url = request.POST.get('url')
-        print('Posted url:', url)
+        print('Posted url:', url)  # debug print
         content = Content(url)
+        content.fill_info()
         return JsonResponse({"url": url, "initial_info": content.info})
 
     return render(request, 'videomanager/add.html')
+
+
+def download(request):
+    if request.method == 'POST':
+        url = request.POST.get('url')
+        print('confirmed url:', url)  # debug print
+        # download url
+
+    # return HttpResponse("downloading")
+    return HttpResponseRedirect(reverse('videomanager:add'))

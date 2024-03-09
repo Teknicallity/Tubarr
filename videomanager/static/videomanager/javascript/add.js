@@ -24,9 +24,10 @@ function getUserInputUrl() {
 const url_input = document.querySelector('#url_input')
 const content_info = document.querySelector('#content_info');
 const confirmation_input = document.querySelector('#confirmation_input')
+let url
 document.querySelector('#content_input_form').addEventListener('submit', (event) => {
     event.preventDefault()
-    const url = url_input.value.trim();
+    url = url_input.value.trim();
     if (url.length === 0) {
         return;
     }
@@ -82,10 +83,23 @@ document.querySelector('#content_input_form').addEventListener('submit', (event)
             }
 
             confirmation_input.innerHTML = `
-                <p class="confirmation_text">Download?</p>
+                <input type="text" id="url_display" name="url" value="${url}" readonly>
+                <label class="confirmation_text">Download?</label>
                 <button type="submit">Yes</button>
                 <button type="reset">No</button>
             `
 
         })
 })
+
+// document.querySelector('#confirmation_form').addEventListener('submit', (event) => {
+//     event.preventDefault()
+//     fetch('/download', {
+//         method: 'POST',
+//         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+//         body: new URLSearchParams({
+//             'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+//             'url': url
+//         })
+//     })
+// })

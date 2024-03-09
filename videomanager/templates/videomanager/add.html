@@ -18,9 +18,10 @@
         </label>
     </form>
 
+
     <div id="input_url_display"></div>
     <div class="confirmation">
-        <form id="confirmation_form" method="POST">
+        <form id="confirmation_form" action="{% url 'videomanager:download' %}" method="POST">
             {% csrf_token %}
             <div id="confirmation_input"></div>
         </form>
