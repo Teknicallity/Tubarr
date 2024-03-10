@@ -1,3 +1,6 @@
+import json
+
+from django.conf import settings
 from django.shortcuts import render, get_list_or_404, get_object_or_404
 from django.urls import reverse
 
@@ -42,16 +45,33 @@ def add(request):
         print('Posted url:', url)  # debug print
         content = Content(url)
         content.fill_info()
-        return JsonResponse({"url": url, "initial_info": content.info})
+
+        request.session['url'] = url
+        request.session['content'] = json.dumps(content.__dict__)
+        info = content.get_info_dict()
+
+        return JsonResponse({"url": url, "initial_info": info})
 
     return render(request, 'videomanager/add.html')
 
 
 def download(request):
     if request.method == 'POST':
-        url = request.POST.get('url')
-        print('confirmed url:', url)  # debug print
-        # download url
+        url = request.session.get('url')
+        content_json = request.session.get('content')
+
+        # url = request.POST.get('url')
+
+        if url and content_json:
+            print('confirmed url:', url)  # debug print
+            content_info = json.loads(content_json)
+            content = Content(url)
+            content.__dict__ = content_info
+
+            content.download(settings.VIDEO_DIR, settings.CONFIG_DIR)
+
+            del request.session['url']
+            del request.session['content']
 
     # return HttpResponse("downloading")
     return HttpResponseRedirect(reverse('videomanager:add'))
