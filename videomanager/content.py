@@ -5,15 +5,23 @@ from enum import Enum
 import yt_dlp
 import json
 
+# yt-dlp --flat-playlist --print-to-file webpage_url "TEXT_FILE.txt" "CHANNEL_URL"
+
+# yt-dlp --flat-playlist --print "pre_process:Playlist - %(title)s - %(id)s" --exec "pre_process:yt-dlp %(url)q
+#   --flat-playlist --print \"Video - %%(title)s - %%(id)s\""
+#   "https://www.youtube.com/@3blue1brown/playlists?view=1&sort=dd&shelf_id=0"
 
 # download_archive: file
-# --download-archive FILE Download only videos not listed in the archive file.
-# Record the IDs of all downloaded videos in it
+# --download-archive FILE Download only media not listed in the archive file.
+# Record the IDs of all downloaded media in it
 
 # -P FILEPATH
 
 # forceprint:
 # ffmpeg_location:
+
+# grab all media in a playlist, make each a video object with an optional attribute playlist id
+# for each video , download. put them in a queue, then for each with x media at a time
 
 
 # cannot use with json serializing
@@ -23,13 +31,20 @@ import json
 #     PLAYLIST = 3
 #     UNKNOWN = 4
 
+class UnknownContentTypeError(Exception):
+    pass
 
-def initial_ydl_opts() -> yt_dlp.YoutubeDL:
+
+class UnknownUrlError(Exception):
+    pass
+
+
+def initial_ydl_opts() -> yt_dlp.YoutubeDL:  # add error hook?
     ydl_opts = {
         'restrictfilenames': True,
         'forceprint': True,
         'format': 'best',
-        # 'quiet': True,
+        'quiet': True,
     }
     return yt_dlp.YoutubeDL(ydl_opts)
 
@@ -54,13 +69,16 @@ class Content:
         self.content_type = None
         self.filename = None
         self.download_path = None
-        self.info: dict = {}
+        self.downloaded = False
 
     def fill_info(self):
         """Parses the url"""
         if _is_valid_url(self.url):
             ydl = initial_ydl_opts()
-            self.content_type = _parse_content_type(self.url)
+            try:
+                self.content_type = _parse_content_type(self.url)
+            except UnknownContentTypeError as e:
+                raise e
 
             match self.content_type:
                 case 'channel':
@@ -84,6 +102,8 @@ class Content:
 
                 case _:
                     print("error")
+        else:
+            raise UnknownUrlError
 
     def get_info_dict(self) -> dict:
         info = {
@@ -115,19 +135,20 @@ class Content:
         ydl_opts = {
             'restrictfilenames': True,
             'format': 'best',
-            # 'quiet': True,
-            'progress_hooks': [ytdl_hook],
-            'outtmpl': os.path.join(self.download_path, '%(title)s-[%(id)s].%(ext)s'),
-            'download_archive': os.path.join(config_dir, 'ytdlp', 'downloaded.txt'),
+            'quiet': True,
+            'progress_hooks': [self._ytdl_hook],
+            'paths': {'home': self.download_path},
+            'outtmpl': {'default': '[%(id)s]-%(title)s.%(ext)s'},
+            # 'download_archive': os.path.join(config_dir, 'ytdlp', 'downloaded.txt'),
         }
         return yt_dlp.YoutubeDL(ydl_opts)
 
-
-def ytdl_hook(d):
-    if d['status'] == 'finished':
-        if d['info_dict']:
-            filename = d['info_dict']['_filename']
-            print("filename:", filename)
+    def _ytdl_hook(self, d):
+        if d['status'] == 'finished':
+            if d['info_dict']:
+                self.filename = os.path.basename(d.get('info_dict').get('_filename'))
+                self.downloaded = True
+            # VIDEO SAVE
 
 
 def _is_valid_url(url: str) -> bool:
@@ -137,7 +158,7 @@ def _is_valid_url(url: str) -> bool:
     @return:
     """
     pattern = r"(https?:\/\/)?(www\.)?youtube\..+?\/"
-    if re.search(pattern, url):
+    if re.match(pattern, url):
         return True
     else:
         return False
@@ -155,4 +176,4 @@ def _parse_content_type(url: str) -> str:
         else:
             return 'video'
     else:
-        return 'unknown'
+        raise UnknownContentTypeError

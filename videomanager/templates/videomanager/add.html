@@ -18,8 +18,8 @@
         </label>
     </form>
 
-
     <div id="input_url_display"></div>
+    <div id="error_display"></div>
     <div class="confirmation">
         <form id="confirmation_form" action="{% url 'videomanager:download' %}" method="POST">
             {% csrf_token %}

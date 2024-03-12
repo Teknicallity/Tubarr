@@ -5,6 +5,13 @@
 {% block maincontent %}
 
     <p>Video Name:</p>
-    <p>{{ video.name }}</p>
+
+    {% if video %}
+        <p>{{ video.name }}</p>
+        <video controls width="500">
+            <source src="{{ MEDIA_URL }}{{ video.channel_id }}{{ video.filename }}">
+        </video>
+    {% endif %}
+
 
 {% endblock %}

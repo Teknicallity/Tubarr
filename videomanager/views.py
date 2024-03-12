@@ -1,10 +1,12 @@
+from datetime import datetime
 import json
 
 from django.conf import settings
 from django.shortcuts import render, get_list_or_404, get_object_or_404
 from django.urls import reverse
+from django.utils import timezone
 
-from .content import Content
+from .content import Content, UnknownContentTypeError, UnknownUrlError
 from .models import Channel, Video, Playlist
 
 # Create your views here.
@@ -36,21 +38,29 @@ def playlist(request, playlist_id):
 
 
 def video(request, video_id):
-    return HttpResponse("Video: %s" % video_id)
+    v = get_object_or_404(Video, video_id=video_id)
+    return render(request, "videomanager/video.html", {"video": v})
 
 
 def add(request):
     if request.method == 'POST':
         url = request.POST.get('url')
-        print('Posted url:', url)  # debug print
-        content = Content(url)
-        content.fill_info()
+        err = ''
 
-        request.session['url'] = url
-        request.session['content'] = json.dumps(content.__dict__)
+        content = Content(url)
+        try:
+            content.fill_info()
+        except UnknownContentTypeError:
+            err = "Could not identify Youtube content type"
+        except UnknownUrlError:
+            err = "Not a Youtube Url"
+        else:
+            request.session['url'] = url
+            request.session['content'] = json.dumps(content.__dict__)
+
         info = content.get_info_dict()
 
-        return JsonResponse({"url": url, "initial_info": info})
+        return JsonResponse({"url": url, "initial_info": info, "error": err})
 
     return render(request, 'videomanager/add.html')
 
@@ -68,10 +78,28 @@ def download(request):
             content = Content(url)
             content.__dict__ = content_info
 
-            content.download(settings.VIDEO_DIR, settings.CONFIG_DIR)
+            content.download(settings.MEDIA_ROOT, settings.CONFIG_DIR)
 
-            del request.session['url']
-            del request.session['content']
+            if content.downloaded:
+                channel_entry, created = Channel.objects.get_or_create(
+                    channel_id=content.channel_id,
+                    defaults={
+                        'name': content.channel_name,
+                        'last_checked': timezone.now()
+                    }
+                )
+
+                channel_entry.video_set.create(
+                    video_id=content.video_id,
+                    title=content.video_title,
+                    filename=content.filename,
+                    description=content.video_description,
+                    upload_date=datetime.strptime(content.upload_date, "%Y%m%d").date(),
+                    last_checked=timezone.now()
+                )
+
+        del request.session['url']
+        del request.session['content']
 
     # return HttpResponse("downloading")
     return HttpResponseRedirect(reverse('videomanager:add'))

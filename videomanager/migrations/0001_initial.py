@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
                 ('last_checked', models.DateTimeField()),
                 ('monitored', models.BooleanField(default=False)),
                 ('channel', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='videomanager.channel')),
-                ('videos', models.ManyToManyField(related_name='playlists', to='videomanager.video')),
+                ('media', models.ManyToManyField(related_name='playlists', to='videomanager.video')),
             ],
         ),
     ]

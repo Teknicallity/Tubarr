@@ -118,4 +118,5 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CONFIG_DIR = BASE_DIR / 'config'
-VIDEO_DIR = BASE_DIR / 'videos'
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = 'content/'
