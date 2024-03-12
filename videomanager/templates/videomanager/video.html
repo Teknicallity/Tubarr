@@ -7,9 +7,10 @@
     <p>Video Name:</p>
 
     {% if video %}
-        <p>{{ video.name }}</p>
-        <video controls width="500">
-            <source src="{{ MEDIA_URL }}{{ video.channel_id }}{{ video.filename }}">
+        <p>{{ video.title }}</p>
+        <video controls width="1000">
+{#            <source src="{% url 'videomanager:index' %}{{ MEDIA_URL }}{{ video.channel.channel_id }}/{{ video.filename }}">#}
+            <source src="{% url 'videomanager:index' %}{{ video_url }}">
         </video>
     {% endif %}
 

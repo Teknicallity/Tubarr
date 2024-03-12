@@ -37,9 +37,14 @@ def playlist(request, playlist_id):
     return render(request, "videomanager/playlist.html", {"video_list": video_list})
 
 
-def video(request, video_id):
+def video(request, video_id, channel_id):
     v = get_object_or_404(Video, video_id=video_id)
-    return render(request, "videomanager/video.html", {"video": v})
+    # url = settings.MEDIA_URL + v.channel.channel_id + '/' + v.filename
+    # returns /content/... which results in /channels//content/...
+
+    url = 'content/' + v.channel.channel_id + '/' + v.filename
+    print("url", url)
+    return render(request, "videomanager/video.html", {"video": v, "video_url": url})
 
 
 def add(request):
