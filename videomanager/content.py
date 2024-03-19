@@ -5,6 +5,7 @@ from enum import Enum
 import yt_dlp
 import json
 
+
 # yt-dlp --flat-playlist --print-to-file webpage_url "TEXT_FILE.txt" "CHANNEL_URL"
 
 # yt-dlp --flat-playlist --print "pre_process:Playlist - %(title)s - %(id)s" --exec "pre_process:yt-dlp %(url)q
@@ -64,8 +65,10 @@ class Content:
         self.thumbnail_url = None
         self.playlist_id = None
         self.playlist_name = None
+        self.playlist_entry_count = None
         self.upload_date = None
 
+        self.playlist_entries = None
         self.content_type = None
         self.filename = None
         self.download_path = None
@@ -99,6 +102,21 @@ class Content:
 
                 case 'playlist':
                     print("playlist")
+                    info_dict = ydl.extract_info(self.url, download=False)
+                    self.video_title = None
+                    self.video_id = None
+                    self.video_description = None
+                    self.video_categories = None
+                    self.video_tags = None
+                    self.channel_id = info_dict['channel_id']
+                    self.channel_name = info_dict['channel']
+                    self.channel_pic = None
+                    self.thumbnail_url = info_dict['thumbnails'][-1]['url']
+                    self.playlist_id = info_dict['id']
+                    self.playlist_name = info_dict['title']
+                    self.playlist_entry_count = info_dict['playlist_count']
+                    self.upload_date = info_dict['modified_date']
+                    self.playlist_entries = info_dict['entries']
 
                 case _:
                     print("error")
@@ -120,6 +138,7 @@ class Content:
             'playlist_name': self.playlist_name,
             'channel_pic': self.channel_pic,
             'upload_date': self.upload_date,
+            'playlist_entry_count': self.playlist_entry_count,
         }
         return info
 
@@ -175,5 +194,7 @@ def _parse_content_type(url: str) -> str:
             return 'playlist'
         else:
             return 'video'
+    elif parsed_url.path.startswith('/playlist'):
+        return 'playlist'
     else:
         raise UnknownContentTypeError

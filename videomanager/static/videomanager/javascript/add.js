@@ -39,6 +39,8 @@ document.querySelector('#content_input_form').addEventListener('submit', (event)
     const urlDisplay = document.getElementById('input_url_display')
     urlDisplay.innerText = `${url}`
 
+    content_info.innerHTML = ''
+
     fetch('', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -71,11 +73,12 @@ document.querySelector('#content_input_form').addEventListener('submit', (event)
                 } else if (info.type === 'playlist') {
                     content_info.innerHTML = `
                     <div id="playlist_info">
-                        <p class="title"></p>
-                        <img class="profile-pic" src="" alt="Channel Picture">
+                        <img class="thumbnail" src=${info.thumbnail_url} alt="Thumbnail">
+                        <p class="title">${info.playlist_name}</p>
+                        <img class="profile-pic" src='' alt="Channel Picture">
                         <div class="info">
-                            <p class="channel"></p>
-                            <p class="video-count"></p>
+                            <p class="channel">${info.channel_name}</p>
+                            <p class="video-count"># of videos: ${info.playlist_entry_count}</p>
                         </div>
                     </div>
                     `
