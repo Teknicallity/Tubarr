@@ -1,0 +1,86 @@
+from datetime import datetime
+import os.path
+
+from videomanager.content import Content
+from videomanager.models import Channel
+from django.utils import timezone
+
+
+class Video(Content):
+    def __init__(self, url=None, ytdlp_info=None):
+        super().__init__()
+        self.url = url
+
+        self.video_title = None
+        self.video_id = None
+        self.video_description = None
+        self.video_categories = None
+        self.video_tags = None
+        self.channel_id = None
+        self.channel_name = None
+        self.thumbnail_url = None
+        self.upload_date = None
+
+        self.info_dict = ytdlp_info
+
+    def fill_info(self):
+        if self.info_dict is None:
+            ydl = self._initial_ydl_opts()
+            self.info_dict = ydl.extract_info(self.url, download=False)
+
+        self.video_title = self.info_dict['title']
+        self.video_id = self.info_dict['id']
+        self.video_description = self.info_dict['description']
+        self.video_categories = self.info_dict['categories']
+        self.video_tags = self.info_dict['tags']
+        self.channel_id = self.info_dict['channel_id']
+        self.channel_name = self.info_dict['channel']
+        self.thumbnail_url = self.info_dict['thumbnail']
+        self.upload_date = self.info_dict['upload_date']
+
+    def get_info_dict(self) -> dict:
+        info = {
+            'type': 'video',
+            'video_title': self.video_title,
+            'video_id': self.video_id,
+            'video_description': self.video_description,
+            'video_categories': self.video_categories,
+            'video_tags': self.video_tags,
+            'channel_id': self.channel_id,
+            'channel_name': self.channel_name,
+            'thumbnail_url': self.thumbnail_url,
+            'upload_date': self.upload_date,
+        }
+        return info
+
+    def download(self, videos_dir, config_dir):
+        self.download_path = os.path.join(videos_dir, self.channel_id)
+
+        ydl = self._get_download_opts(config_dir)
+        ydl.download(self.url)
+
+        if self.downloaded:
+            self.insert_into_db()
+
+        # return self.download_path, self.filename
+
+    def insert_into_db(self):
+        channel_entry, created = Channel.objects.get_or_create(
+            channel_id=self.channel_id,
+            defaults={
+                'name': self.channel_name,
+                'last_checked': timezone.now()
+            }
+        )
+        if created:
+            # get channel thumbnail and banner
+            pass
+
+        channel_entry.video_set.create(
+            video_id=self.video_id,
+            title=self.video_title,
+            filename=self.filename,
+            description=self.video_description,
+            upload_date=datetime.strptime(self.upload_date, "%Y%m%d").date(),
+            last_checked=timezone.now()
+        )

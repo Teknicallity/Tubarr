@@ -6,7 +6,7 @@ from django.shortcuts import render, get_list_or_404, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 
-from .content import Content, UnknownContentTypeError, UnknownUrlError
+from .content_handler import ContentHandler, UnknownContentTypeError, UnknownUrlError
 from .models import Channel, Video, Playlist
 
 # Create your views here.
@@ -52,7 +52,7 @@ def add(request):
         url = request.POST.get('url')
         err = ''
 
-        content = Content(url)
+        content = ContentHandler(url)
         try:
             content.fill_info()
         except UnknownContentTypeError:
@@ -80,7 +80,7 @@ def download(request):
         if url and content_json:
             print('confirmed url:', url)  # debug print
             content_info = json.loads(content_json)
-            content = Content(url)
+            content = ContentHandler(url)
             content.__dict__ = content_info
 
             content.download(settings.MEDIA_ROOT, settings.CONFIG_DIR)
