@@ -83,6 +83,18 @@ class ContentHandler:
     def download(self, videos_dir, config_dir):
         self.content_object.download(videos_dir, config_dir)
 
+    def apply_json(self, info: dict):
+        match info['type']:
+            case 'channel':
+                print('channel')
+
+            case 'video':
+                self.content_object = Video()
+                self.content_object.__dict__ = info
+
+            case 'playlist':
+                self.content_object = Playlist()
+                self.content_object.__dict__ = info
 
 
 def _is_valid_url(url: str) -> bool:

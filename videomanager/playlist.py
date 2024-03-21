@@ -9,7 +9,7 @@ from videomanager.video import Video
 
 
 class Playlist(Content):
-    def __init__(self, url):
+    def __init__(self, url=None):
         super().__init__()
         self.url = url
 

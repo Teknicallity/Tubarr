@@ -1,17 +1,15 @@
-from datetime import datetime
 import json
 
 from django.conf import settings
-from django.shortcuts import render, get_list_or_404, get_object_or_404
+from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-from django.utils import timezone
 
 from .content_handler import ContentHandler, UnknownContentTypeError, UnknownUrlError
 from .models import Channel, Video, Playlist
 
-# Create your views here.
 
-from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+# Create your views here.
 
 
 # call this view through urls
@@ -52,18 +50,18 @@ def add(request):
         url = request.POST.get('url')
         err = ''
 
-        content = ContentHandler(url)
+        content_handler = ContentHandler(url)
         try:
-            content.fill_info()
+            content_handler.fill_info()
         except UnknownContentTypeError:
             err = "Could not identify Youtube content type"
         except UnknownUrlError:
             err = "Not a Youtube Url"
         else:
             request.session['url'] = url
-            request.session['content'] = json.dumps(content.__dict__)
+            request.session['content'] = json.dumps(content_handler.get_info_dict())
 
-        info = content.get_info_dict()
+        info = content_handler.get_info_dict()
 
         return JsonResponse({"url": url, "initial_info": info, "error": err})
 
@@ -81,27 +79,9 @@ def download(request):
             print('confirmed url:', url)  # debug print
             content_info = json.loads(content_json)
             content_handler = ContentHandler(url)
-            content_handler.__dict__ = content_info
+            content_handler.apply_json(content_info)
 
             content_handler.download(settings.MEDIA_ROOT, settings.CONFIG_DIR)
-
-            if content_handler.downloaded:
-                channel_entry, created = Channel.objects.get_or_create(
-                    channel_id=content_handler.channel_id,
-                    defaults={
-                        'name': content_handler.channel_name,
-                        'last_checked': timezone.now()
-                    }
-                )
-
-                channel_entry.video_set.create(
-                    video_id=content_handler.video_id,
-                    title=content_handler.video_title,
-                    filename=content_handler.filename,
-                    description=content_handler.video_description,
-                    upload_date=datetime.strptime(content_handler.upload_date, "%Y%m%d").date(),
-                    last_checked=timezone.now()
-                )
 
         del request.session['url']
         del request.session['content']
