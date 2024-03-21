@@ -76,10 +76,10 @@ class Video(Content):
             # get channel thumbnail and banner
             pass
 
-        channel_entry.video_set.create(
+        return channel_entry.video_set.create(
             video_id=self.video_id,
             title=self.video_title,
-            filename=self.filename,
+            filename=self.filenames[self.video_id],
             description=self.video_description,
             upload_date=datetime.strptime(self.upload_date, "%Y%m%d").date(),
             last_checked=timezone.now()

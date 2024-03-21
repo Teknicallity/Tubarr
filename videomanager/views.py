@@ -80,26 +80,26 @@ def download(request):
         if url and content_json:
             print('confirmed url:', url)  # debug print
             content_info = json.loads(content_json)
-            content = ContentHandler(url)
-            content.__dict__ = content_info
+            content_handler = ContentHandler(url)
+            content_handler.__dict__ = content_info
 
-            content.download(settings.MEDIA_ROOT, settings.CONFIG_DIR)
+            content_handler.download(settings.MEDIA_ROOT, settings.CONFIG_DIR)
 
-            if content.downloaded:
+            if content_handler.downloaded:
                 channel_entry, created = Channel.objects.get_or_create(
-                    channel_id=content.channel_id,
+                    channel_id=content_handler.channel_id,
                     defaults={
-                        'name': content.channel_name,
+                        'name': content_handler.channel_name,
                         'last_checked': timezone.now()
                     }
                 )
 
                 channel_entry.video_set.create(
-                    video_id=content.video_id,
-                    title=content.video_title,
-                    filename=content.filename,
-                    description=content.video_description,
-                    upload_date=datetime.strptime(content.upload_date, "%Y%m%d").date(),
+                    video_id=content_handler.video_id,
+                    title=content_handler.video_title,
+                    filename=content_handler.filename,
+                    description=content_handler.video_description,
+                    upload_date=datetime.strptime(content_handler.upload_date, "%Y%m%d").date(),
                     last_checked=timezone.now()
                 )
 

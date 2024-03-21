@@ -27,7 +27,7 @@ class Content:
 
     def __init__(self):
         self.download_path = None
-        self.filename = None
+        self.filenames: dict = {}
         self.downloaded = False
 
     @staticmethod
@@ -55,11 +55,17 @@ class Content:
     def _ytdl_hook(self, d):
         if d['status'] == 'finished':
             if d['info_dict']:
-                self.filename = os.path.basename(d.get('info_dict').get('_filename'))
+                filename = os.path.basename(d.get('info_dict').get('_filename'))
+
+                video_id = d.get('info_dict').get('_filename')
+                self.filenames[video_id] = filename
                 self.downloaded = True
 
     def download(self, videos_dir, config_dir):
         pass
 
     def fill_info(self):
+        pass
+
+    def get_info_dict(self) -> dict:
         pass

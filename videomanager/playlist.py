@@ -2,7 +2,7 @@ from datetime import datetime
 import os.path
 
 from videomanager.content import Content
-from videomanager.models import Channel
+from videomanager.models import Channel, PlaylistSource
 from django.utils import timezone
 
 from videomanager.video import Video
@@ -39,6 +39,7 @@ class Playlist(Content):
 
     def get_info_dict(self) -> dict:
         info = {
+            'type': 'playlist',
             'channel_id': self.channel_id,
             'channel_name': self.channel_name,
             'thumbnail_url': self.thumbnail_url,
@@ -56,19 +57,22 @@ class Playlist(Content):
         ydl = self._get_download_opts(config_dir)
         ydl.download(self.url)
 
-        for entry in self.playlist_entries:
-            video = Video(ytdlp_info=entry)
-            video.fill_info()
-            video.insert_into_db()
-
         # return self.download_path, self.filename
 
     def insert_into_db(self):
+        playlist_source = PlaylistSource.objects.get_or_create(name='temporary')
         channel_entry = Channel.objects.get(channel_id=self.channel_id)
-        channel_entry.playlist_set.create(
+        new_playlist = channel_entry.playlist_set.create(
             playlist_id=self.playlist_id,
             name=self.playlist_name,
             last_checked=timezone.now(),
-            # videos
-            # source
+            source=playlist_source
         )
+
+        for entry in self.playlist_entries:
+            video = Video(ytdlp_info=entry)
+            video.fill_info()
+            video.filenames = self.filenames
+            video_db_entry = video.insert_into_db()
+
+            new_playlist.videos.add(video_db_entry)
