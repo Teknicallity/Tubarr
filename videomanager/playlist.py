@@ -59,10 +59,10 @@ class Playlist(Content):
             if d['info_dict']:
                 filename = os.path.basename(d.get('info_dict').get('filename'))
 
-                video_id = d.get('info_dict').get('filename')
+                video_id = d.get('info_dict').get('id')
                 self.downloaded = True
-                print(self.playlist_id, ':playlist_id')
-                print(self.filenames['t'], 'hook')
+                print('\nVIDEOID AT HOOK:', video_id)
+                print('\nVIDEONAME AT HOOK:', filename)
                 self.filenames[video_id] = filename
 
     def download(self, videos_dir, config_dir):
@@ -74,12 +74,12 @@ class Playlist(Content):
         # return self.download_path, self.filename
 
     def insert_into_db(self):
-        playlist_source = PlaylistSource.objects.get_or_create(name='temporary')
-        channel_entry = Channel.objects.get_or_create(channel_id=self.channel_id,
-                                                      defaults={
-                                                          'name': self.channel_name,
-                                                          'last_checked': timezone.now()
-                                                      })
+        playlist_source, created = PlaylistSource.objects.get_or_create(name='temporary')
+        channel_entry, created = Channel.objects.get_or_create(channel_id=self.channel_id,
+                                                               defaults={
+                                                                   'name': self.channel_name,
+                                                                   'last_checked': timezone.now()
+                                                               })
         new_playlist = channel_entry.playlist_set.create(
             playlist_id=self.playlist_id,
             name=self.playlist_name,
@@ -90,6 +90,8 @@ class Playlist(Content):
         for entry in self.playlist_entries:
             video = Video(ytdlp_info=entry)
             video.fill_info()
+            # print(entry)
+            print('FILENAMES DB', self.filenames)
             video.filenames = self.filenames
             video_db_entry = video.insert_into_db()
 

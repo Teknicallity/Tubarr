@@ -29,7 +29,7 @@
                 {#            <li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li> modified#}
                 {#            with namespacing #}
                 <li>
-                    <a href="{% url 'videomanager:playlist' playlist.channel.channel_id video.video_id %}">
+                    <a href="{% url 'videomanager:playlist' playlist.channel.channel_id playlist.playlist_id %}">
                         {{ playlist.name }}
                     </a>
                 </li>
