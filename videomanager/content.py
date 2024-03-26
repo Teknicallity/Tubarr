@@ -41,3 +41,6 @@ class Content:
 
     def get_info_dict(self) -> dict:
         pass
+
+    def insert_into_db(self):
+        pass

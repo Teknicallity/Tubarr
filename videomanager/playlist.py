@@ -25,8 +25,6 @@ class Playlist(Content):
         self.info_dict = None
         self.playlist_entries = None
 
-        print(self.filenames['t'], 'init')
-
     def fill_info(self):
         ydl = self._initial_ydl_opts()
         self.info_dict = ydl.extract_info(self.url, download=False)
@@ -52,6 +50,7 @@ class Playlist(Content):
             'upload_date': self.upload_date,
             'playlist_entry_count': self.playlist_entry_count,
             'playlist_entries': self.playlist_entries,
+            'filenames': self.filenames,
         }
         return info
 
@@ -62,6 +61,7 @@ class Playlist(Content):
 
                 video_id = d.get('info_dict').get('filename')
                 self.downloaded = True
+                print(self.playlist_id, ':playlist_id')
                 print(self.filenames['t'], 'hook')
                 self.filenames[video_id] = filename
 
@@ -75,7 +75,11 @@ class Playlist(Content):
 
     def insert_into_db(self):
         playlist_source = PlaylistSource.objects.get_or_create(name='temporary')
-        channel_entry = Channel.objects.get(channel_id=self.channel_id)
+        channel_entry = Channel.objects.get_or_create(channel_id=self.channel_id,
+                                                      defaults={
+                                                          'name': self.channel_name,
+                                                          'last_checked': timezone.now()
+                                                      })
         new_playlist = channel_entry.playlist_set.create(
             playlist_id=self.playlist_id,
             name=self.playlist_name,

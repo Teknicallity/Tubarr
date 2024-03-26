@@ -76,11 +76,13 @@ class ContentHandler:
                     print("error")
         else:
             raise UnknownUrlError
+
     def get_info_dict(self) -> dict:
         return self.content_object.get_info_dict()
 
     def download(self, videos_dir, config_dir):
         self.content_object.download(videos_dir, config_dir)
+        self.content_object.insert_into_db()
 
     def apply_json(self, info: dict):
         match info['type']:
@@ -93,7 +95,6 @@ class ContentHandler:
 
             case 'playlist':
                 self.content_object = Playlist()
-                print(self.content_object.filenames['t'], 'handler')
                 self.content_object.__dict__ = info
 
 
