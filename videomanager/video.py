@@ -41,6 +41,7 @@ class Video(Content):
     def get_info_dict(self) -> dict:
         info = {
             'type': 'video',
+            'url': self.url,
             'video_title': self.video_title,
             'video_id': self.video_id,
             'video_description': self.video_description,

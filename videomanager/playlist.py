@@ -21,8 +21,11 @@ class Playlist(Content):
         self.playlist_entry_count = None
         self.upload_date = None
 
+        self.filenames = {'t': 'emp'}
         self.info_dict = None
         self.playlist_entries = None
+
+        print(self.filenames['t'], 'init')
 
     def fill_info(self):
         ydl = self._initial_ydl_opts()
@@ -40,6 +43,7 @@ class Playlist(Content):
     def get_info_dict(self) -> dict:
         info = {
             'type': 'playlist',
+            'url': self.url,
             'channel_id': self.channel_id,
             'channel_name': self.channel_name,
             'thumbnail_url': self.thumbnail_url,
@@ -50,6 +54,16 @@ class Playlist(Content):
             'playlist_entries': self.playlist_entries,
         }
         return info
+
+    def _ytdl_hook(self, d):  # try making this function in each object
+        if d['status'] == 'finished':
+            if d['info_dict']:
+                filename = os.path.basename(d.get('info_dict').get('filename'))
+
+                video_id = d.get('info_dict').get('filename')
+                self.downloaded = True
+                print(self.filenames['t'], 'hook')
+                self.filenames[video_id] = filename
 
     def download(self, videos_dir, config_dir):
         self.download_path = os.path.join(videos_dir, self.channel_id)

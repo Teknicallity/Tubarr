@@ -76,7 +76,6 @@ class ContentHandler:
                     print("error")
         else:
             raise UnknownUrlError
-
     def get_info_dict(self) -> dict:
         return self.content_object.get_info_dict()
 
@@ -94,6 +93,7 @@ class ContentHandler:
 
             case 'playlist':
                 self.content_object = Playlist()
+                print(self.content_object.filenames['t'], 'handler')
                 self.content_object.__dict__ = info
 
 
