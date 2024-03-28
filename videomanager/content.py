@@ -1,3 +1,6 @@
+import shutil
+
+import requests
 import yt_dlp
 import os.path
 
@@ -29,6 +32,33 @@ class Content:
             # 'download_archive': os.path.join(config_dir, 'ytdlp', 'downloaded.txt'),
         }
         return yt_dlp.YoutubeDL(ydl_opts)
+
+    def download_channel_pictures(self, channel_id: str):
+        avatar_url, banner_url = self._get_channel_pictures_url(channel_id)
+
+        avatar_path = os.path.join(self.download_path, 'avatar.jpg')
+        response = requests.get(avatar_url, stream=True)
+        if response.status_code == 200:
+            with open(avatar_path, 'wb') as f:
+                shutil.copyfileobj(response.raw, f)
+        else:
+            print('Could not download avatar')
+
+    @staticmethod
+    def _get_channel_pictures_url(channel_id: str) -> (str, str):
+        ydl = yt_dlp.YoutubeDL({'playlist_items': '0'})
+        info = ydl.extract_info(channel_id)
+        avatar = ''
+        banner = ''
+
+        for image_dict in info['thumbnails']:
+            image_dict: dict
+            if image_dict.get('id') == 'avatar_uncropped':
+                avatar = image_dict.get('url')
+            elif image_dict.get('id') == 'banner_uncropped':
+                banner = image_dict.get('url')
+
+        return avatar, banner
 
     def _ytdl_hook(self, d):  # try making this function in each object
         pass

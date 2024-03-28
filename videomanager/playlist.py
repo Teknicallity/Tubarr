@@ -80,6 +80,9 @@ class Playlist(Content):
                                                                    'name': self.channel_name,
                                                                    'last_checked': timezone.now()
                                                                })
+        if created:
+            print('channel created')
+            
         new_playlist = channel_entry.playlist_set.create(
             playlist_id=self.playlist_id,
             name=self.playlist_name,

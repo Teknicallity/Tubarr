@@ -21,6 +21,7 @@ class Video(Content):
         self.thumbnail_url = None
         self.upload_date = None
 
+        self.filenames = {'t': 'emp'}
         self.info_dict = ytdlp_info
 
     def fill_info(self):
@@ -74,8 +75,7 @@ class Video(Content):
             }
         )
         if created:
-            # get channel thumbnail and banner
-            pass
+            print('channel created')
 
         return channel_entry.video_set.create(
             video_id=self.video_id,
