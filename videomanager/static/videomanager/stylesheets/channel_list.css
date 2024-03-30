@@ -1,0 +1,38 @@
+.content-grid{
+    display: grid;
+    gap: 1em;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    justify-content: space-evenly;
+    padding: 1em;
+    margin-top: 4rem;
+}
+.channel-card{
+    display: flex;
+    max-width: 200px;
+    background-color: lightgray;
+    border-radius: 5px;
+}
+.channel-card:hover{
+    box-shadow: black 0 0 5px -1px;
+}
+.channel-link{
+    display: inline-block;
+    padding: 0.5em;
+    text-decoration: none;
+    color: black;
+}
+.channel-icon-container{
+    position: relative;
+}
+.channel-icon{
+    border-radius: 50%;
+    width: 100%;
+}
+.channel-title{
+    overflow: hidden;
+    max-width: 200px;
+    height: 3rem;
+    font-size: 1.1rem;
+    text-align: center;
+    padding-bottom: 0.5em;
+}

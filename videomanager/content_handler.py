@@ -82,7 +82,9 @@ class ContentHandler:
 
     def download(self, videos_dir, config_dir):
         self.content_object.download(videos_dir, config_dir)
-        self.content_object.insert_into_db()
+
+        if self.content_object.downloaded:
+            self.content_object.insert_into_db()
 
     def apply_json(self, info: dict):
         match info['type']:

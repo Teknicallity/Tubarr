@@ -20,6 +20,7 @@
 }
 .description{
     margin: 0.5rem 2rem 0;
+    white-space: pre-wrap;
 }
 .profile-pic{
     max-width: 4rem;

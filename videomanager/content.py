@@ -10,6 +10,9 @@ class Content:
     def __init__(self):
         self.download_path = None
         self.downloaded = False
+        self.channel_id = None
+        self.channel_name = None
+        self.filenames = {'t': 'emp'}
 
     @staticmethod
     def _initial_ydl_opts() -> yt_dlp.YoutubeDL:  # add error hook?
@@ -33,21 +36,33 @@ class Content:
         }
         return yt_dlp.YoutubeDL(ydl_opts)
 
-    def download_channel_pictures(self, channel_id: str):
-        avatar_url, banner_url = self._get_channel_pictures_url(channel_id)
+    def download_channel_pictures(self):
+        avatar_url, banner_url = self._get_channel_pictures_url(self.channel_id)
+        if avatar_url != '':
+            avatar_path = os.path.join(self.download_path, 'avatar.jpg')
+            self._download_picture(avatar_url, avatar_path)
+        else:
+            print(f"could not get avatar url for {self.channel_name}\n")
 
-        avatar_path = os.path.join(self.download_path, 'avatar.jpg')
-        response = requests.get(avatar_url, stream=True)
+        if banner_url != '':
+            banner_path = os.path.join(self.download_path, 'banner.jpg')
+            self._download_picture(banner_url, banner_path)
+        else:
+            print(f"could not get banner url for {self.channel_name}\n")
+
+    @staticmethod
+    def _download_picture(url: str, path: str):
+        response = requests.get(url, stream=True)
         if response.status_code == 200:
-            with open(avatar_path, 'wb') as f:
+            with open(path, 'wb') as f:
                 shutil.copyfileobj(response.raw, f)
         else:
-            print('Could not download avatar')
+            print('Could not download picture')
 
     @staticmethod
     def _get_channel_pictures_url(channel_id: str) -> (str, str):
         ydl = yt_dlp.YoutubeDL({'playlist_items': '0'})
-        info = ydl.extract_info(channel_id)
+        info = ydl.extract_info('www.youtube.com/channel/' + channel_id)
         avatar = ''
         banner = ''
 
@@ -60,8 +75,16 @@ class Content:
 
         return avatar, banner
 
-    def _ytdl_hook(self, d):  # try making this function in each object
-        pass
+    def _ytdl_hook(self, d):
+        if d['status'] == 'finished':
+            if d['info_dict']:
+                filename = os.path.basename(d.get('info_dict').get('filename'))
+
+                video_id = d.get('info_dict').get('id')
+                self.downloaded = True
+                print('\nVIDEOID AT HOOK:', video_id)
+                print('\nVIDEONAME AT HOOK:', filename)
+                self.filenames[video_id] = filename
 
     def download(self, videos_dir, config_dir):
         pass
@@ -74,3 +97,4 @@ class Content:
 
     def insert_into_db(self):
         pass
+

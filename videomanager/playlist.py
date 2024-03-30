@@ -13,15 +13,12 @@ class Playlist(Content):
         super().__init__()
         self.url = url
 
-        self.channel_id = None
-        self.channel_name = None
         self.thumbnail_url = None
         self.playlist_id = None
         self.playlist_name = None
         self.playlist_entry_count = None
         self.upload_date = None
 
-        self.filenames = {'t': 'emp'}
         self.info_dict = None
         self.playlist_entries = None
 
@@ -51,19 +48,9 @@ class Playlist(Content):
             'playlist_entry_count': self.playlist_entry_count,
             'playlist_entries': self.playlist_entries,
             'filenames': self.filenames,
+            'downloaded': self.downloaded,
         }
         return info
-
-    def _ytdl_hook(self, d):  # try making this function in each object
-        if d['status'] == 'finished':
-            if d['info_dict']:
-                filename = os.path.basename(d.get('info_dict').get('filename'))
-
-                video_id = d.get('info_dict').get('id')
-                self.downloaded = True
-                print('\nVIDEOID AT HOOK:', video_id)
-                print('\nVIDEONAME AT HOOK:', filename)
-                self.filenames[video_id] = filename
 
     def download(self, videos_dir, config_dir):
         self.download_path = os.path.join(videos_dir, self.channel_id)
@@ -82,7 +69,8 @@ class Playlist(Content):
                                                                })
         if created:
             print('channel created')
-            
+            self.download_channel_pictures()
+
         new_playlist = channel_entry.playlist_set.create(
             playlist_id=self.playlist_id,
             name=self.playlist_name,

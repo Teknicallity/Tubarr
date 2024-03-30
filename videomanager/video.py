@@ -16,12 +16,9 @@ class Video(Content):
         self.video_description = None
         self.video_categories = None
         self.video_tags = None
-        self.channel_id = None
-        self.channel_name = None
         self.thumbnail_url = None
         self.upload_date = None
 
-        self.filenames = {'t': 'emp'}
         self.info_dict = ytdlp_info
 
     def fill_info(self):
@@ -52,6 +49,8 @@ class Video(Content):
             'channel_name': self.channel_name,
             'thumbnail_url': self.thumbnail_url,
             'upload_date': self.upload_date,
+            'filenames': self.filenames,
+            'downloaded': self.downloaded,
         }
         return info
 
@@ -60,9 +59,6 @@ class Video(Content):
 
         ydl = self._get_download_opts(config_dir)
         ydl.download(self.url)
-
-        if self.downloaded:
-            self.insert_into_db()
 
         # return self.download_path, self.filename
 
@@ -75,6 +71,7 @@ class Video(Content):
             }
         )
         if created:
+            self.download_channel_pictures()
             print('channel created')
 
         return channel_entry.video_set.create(
