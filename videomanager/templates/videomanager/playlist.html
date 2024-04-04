@@ -1,0 +1,21 @@
+{% extends "videomanager/base.html" %}
+
+{% block stylesheets %}{% endblock %}
+
+{% block maincontent %}
+
+    <p>Playlist Videos:</p>
+    {% if video_list %}
+        <ul>
+            {% for video in video_list %}
+                {#            <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li> og#}
+                {#            <li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li> modified#}
+                {#            with namespacing #}
+                <li><a href="{% url 'videomanager:channel' video.channel_id %}">{{ video.name }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No videos available</p>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "videomanager/base.html" %}
+
+{% block stylesheets %}{% endblock %}
+
+{% block maincontent %}
+
+    <p>Video Name:</p>
+
+    {% if video %}
+        <p>{{ video.title }}</p>
+        <video controls width="1000">
+{#            <source src="{% url 'videomanager:index' %}{{ MEDIA_URL }}{{ video.channel.channel_id }}/{{ video.filename }}">#}
+            <source src="{% url 'videomanager:index' %}{{ video_url }}">
+        </video>
+    {% endif %}
+
+
+{% endblock %}
