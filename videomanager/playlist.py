@@ -68,8 +68,8 @@ class Playlist(Content):
                                                                    'last_checked': timezone.now()
                                                                })
         if created:
-            print('channel created')
             self.download_channel_pictures()
+            print(f'channel created: {self.channel_name}\n')
 
         new_playlist = channel_entry.playlist_set.create(
             playlist_id=self.playlist_id,

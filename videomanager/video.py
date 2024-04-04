@@ -71,8 +71,10 @@ class Video(Content):
             }
         )
         if created:
-            self.download_channel_pictures()
-            print('channel created')
+            avatar_file, banner_file = self.download_channel_pictures()
+            channel_entry.profile_pic_path = avatar_file
+            channel_entry.save()
+            print(f'channel created: {self.channel_name}\n')
 
         return channel_entry.video_set.create(
             video_id=self.video_id,

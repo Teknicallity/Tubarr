@@ -14,6 +14,7 @@ class Channel(models.Model):
     monitored = models.BooleanField(default=False)
     profile_pic_path = models.FilePathField()
 
+
     def __str__(self):
         return self.name
 

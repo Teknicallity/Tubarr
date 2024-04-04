@@ -36,19 +36,26 @@ class Content:
         }
         return yt_dlp.YoutubeDL(ydl_opts)
 
-    def download_channel_pictures(self):
+    def download_channel_pictures(self) -> (str, str):
         avatar_url, banner_url = self._get_channel_pictures_url(self.channel_id)
+        avatar_name = ''
+        banner_name = ''
+
         if avatar_url != '':
-            avatar_path = os.path.join(self.download_path, 'avatar.jpg')
+            avatar_name = 'avatar.jpg'
+            avatar_path = os.path.join(self.download_path, avatar_name)
             self._download_picture(avatar_url, avatar_path)
         else:
             print(f"could not get avatar url for {self.channel_name}\n")
 
         if banner_url != '':
-            banner_path = os.path.join(self.download_path, 'banner.jpg')
+            banner_name = 'banner.jpg'
+            banner_path = os.path.join(self.download_path, banner_name)
             self._download_picture(banner_url, banner_path)
         else:
             print(f"could not get banner url for {self.channel_name}\n")
+
+        return avatar_name, banner_name
 
     @staticmethod
     def _download_picture(url: str, path: str):
