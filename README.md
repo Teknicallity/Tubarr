@@ -24,8 +24,15 @@ Built on Django and utilizing yt-dlp for downloading videos, Tubarr offers a use
 3. In the project directory, run ```pip install -r requirements.txt```
 4. Then run ```python3 manage.py migrate```
 5. Finally, run ```python3 manage.py runserver```
+6. Visit "http://localhost:8000/channels"
 
 ## Usage
+
+- Once on the homepage, "http://localhost:8000/channels", you can click "Add Content" in the upper right.
+- This input can take either a YT video or playlist, displaying the information for either.
+- Once previewed, choose download in order to have the server download the content.
+- After the page refreshes, the channel and video will be available on the home page for viewing.
+
 
 ## Planned Features
 
@@ -34,3 +41,9 @@ Built on Django and utilizing yt-dlp for downloading videos, Tubarr offers a use
 - Better managing of videos. There is no easy way of deleting a video.
 - Improving the UI to be more modern
 - A visible settings page
+
+## Screenshots
+
+![Home Page](./documentation/screenshots/home-page.png?raw=true "Home Page")
+![Add Page](./documentation/screenshots/add-page.png?raw=true "Add Page")
+![Channel Page](./documentation/screenshots/channel-page.png?raw=true "Channel Page")
