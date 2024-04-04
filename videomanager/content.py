@@ -32,7 +32,7 @@ class Content:
             'progress_hooks': [self._ytdl_hook],
             'paths': {'home': self.download_path},
             'outtmpl': {'default': '[%(id)s]-%(title)s.%(ext)s'},
-            # 'download_archive': os.path.join(config_dir, 'ytdlp', 'downloaded.txt'),
+            'download_archive': os.path.join(config_dir, 'ytdlp', 'downloaded.txt'),
         }
         return yt_dlp.YoutubeDL(ydl_opts)
 
