@@ -9,7 +9,7 @@
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
     <data-source source="LOCAL" name="tubarr [2]" uuid="c030ec38-914c-4887-9907-7482d5c6b1e1">
-      <driver-ref>sqlite.xerial</driver-ref>
+      <driver-ref>9d2b202d-bd6a-4ac6-a647-6d48f624b0ee</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
       <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/config/tubarr.db</jdbc-url>
