@@ -1,11 +1,10 @@
-from datetime import datetime
 import os.path
 
-from videomanager.content import Content
+from videomanager.content_handlers.content import Content
 from videomanager.models import Channel, PlaylistSource
 from django.utils import timezone
 
-from videomanager.video import Video
+from videomanager.content_handlers.video import Video
 
 
 class Playlist(Content):

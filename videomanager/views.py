@@ -5,7 +5,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
-from .content_handler import ContentHandler, UnknownContentTypeError, UnknownUrlError
+from videomanager.content_handlers.content_handler import ContentHandler, UnknownContentTypeError, UnknownUrlError
 from .models import Channel, Video, Playlist
 
 

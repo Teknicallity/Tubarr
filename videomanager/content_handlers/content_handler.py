@@ -1,13 +1,9 @@
-import os.path
 import re
 from urllib.parse import urlparse, parse_qs
-from enum import Enum
-import yt_dlp
-import json
 
-from videomanager.content import Content
-from videomanager.playlist import Playlist
-from videomanager.video import Video
+from videomanager.content_handlers.content import Content
+from videomanager.content_handlers.playlist import Playlist
+from videomanager.content_handlers.video import Video
 
 
 # yt-dlp --flat-playlist --print-to-file webpage_url "TEXT_FILE.txt" "CHANNEL_URL"

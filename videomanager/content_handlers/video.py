@@ -1,7 +1,7 @@
 from datetime import datetime
 import os.path
 
-from videomanager.content import Content
+from videomanager.content_handlers.content import Content
 from videomanager.models import Channel
 from django.utils import timezone
 
