@@ -1,10 +1,12 @@
 import re
+import logging
 from urllib.parse import urlparse, parse_qs
 
 from videomanager.content_handlers.content import Content
 from videomanager.content_handlers.playlist import Playlist
 from videomanager.content_handlers.video import Video
 
+from django_huey import task
 
 # yt-dlp --flat-playlist --print-to-file webpage_url "TEXT_FILE.txt" "CHANNEL_URL"
 
@@ -32,6 +34,9 @@ from videomanager.content_handlers.video import Video
 #     PLAYLIST = 3
 #     UNKNOWN = 4
 
+logger = logging.getLogger(__name__)
+
+
 class UnknownContentTypeError(Exception):
     pass
 
@@ -52,32 +57,30 @@ class ContentHandler:
             try:
                 self.content_type = _parse_content_type(self.url)
             except UnknownContentTypeError as e:
+                logger.warning(f'{e}: Not a valid content type: {self.url}')
                 raise e
 
             match self.content_type:
                 case 'channel':
-                    print("channel")
+                    logger.warning('Channel download not implemented')
 
                 case 'video':
-                    print("Video")
                     self.content_object = Video(self.url)
                     self.content_object.fill_info()
 
                 case 'playlist':
-                    print("playlist")
                     self.content_object = Playlist(self.url)
                     self.content_object.fill_info()
 
-                case _:
-                    print("error")
         else:
+            logger.warning(f'Unknown URL: {self.url}')
             raise UnknownUrlError
 
-    def get_info_dict(self) -> dict:
-        return self.content_object.get_info_dict()
+    def get_attribute_dict(self) -> dict:
+        return self.content_object.get_attribute_dict()
 
-    def download(self, videos_dir, config_dir):
-        self.content_object.download(videos_dir, config_dir)
+    def download(self):
+        self.content_object.download()
 
         if self.content_object.downloaded:
             self.content_object.insert_into_db()
@@ -85,7 +88,7 @@ class ContentHandler:
     def apply_json(self, info: dict):
         match info['type']:
             case 'channel':
-                print('channel')
+                logger.warning('Channel attributes not implemented')
 
             case 'video':
                 self.content_object = Video()

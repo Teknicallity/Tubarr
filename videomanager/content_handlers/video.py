@@ -1,9 +1,13 @@
 from datetime import datetime
 import os.path
+import logging
 
 from videomanager.content_handlers.content import Content
 from videomanager.models import Channel
 from django.utils import timezone
+from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 
 class Video(Content):
@@ -36,7 +40,7 @@ class Video(Content):
         self.thumbnail_url = self.info_dict['thumbnail']
         self.upload_date = self.info_dict['upload_date']
 
-    def get_info_dict(self) -> dict:
+    def get_attribute_dict(self) -> dict:
         info = {
             'type': 'video',
             'url': self.url,
@@ -54,10 +58,10 @@ class Video(Content):
         }
         return info
 
-    def download(self, videos_dir, config_dir):
-        self.download_path = os.path.join(videos_dir, self.channel_id)
+    def download(self):
+        self.download_path = os.path.join(settings.MEDIA_ROOT, self.channel_id)
 
-        ydl = self._get_download_opts(config_dir)
+        ydl = self._get_download_opts()
         ydl.download(self.url)
 
         # return self.download_path, self.filename
@@ -74,7 +78,8 @@ class Video(Content):
             avatar_file, banner_file = self.download_channel_pictures()
             channel_entry.profile_pic_path = avatar_file
             channel_entry.save()
-            print(f'channel created: {self.channel_name}\n')
+            logger.info(f'channel created: {self.channel_name}')
+        logger.debug(f'filenames dictionary: {self.filenames}')
 
         return channel_entry.video_set.create(
             video_id=self.video_id,

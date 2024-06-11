@@ -14,11 +14,11 @@ class Channel(models.Model):
     monitored = models.BooleanField(default=False)
     profile_pic_path = models.FilePathField()
 
-
     def __str__(self):
         return self.name
 
 
+# For planned alternative sources than youtube, such as user created playlist
 class PlaylistSource(models.Model):
     name = models.CharField(max_length=20)
 

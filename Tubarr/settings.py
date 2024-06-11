@@ -133,11 +133,11 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '{asctime} {levelname} {module} {process:d} {thread:d} {message}',
+            'format': '{asctime} [{levelname}] {module} {process:d} {thread:d} {message}',
             'style': '{',
         },
         'simple': {
-            'format': '{asctime} {levelname} {message}',
+            'format': '{asctime} [{levelname}] {message}',
             'style': '{',
         }
     },
@@ -160,6 +160,11 @@ LOGGING = {
         'videomanager': {
             'handlers': ['console'],
             'level': os.getenv('TUBARR_LOG_LEVEL', 'INFO'),
+            'propagate': False,
+        },
+        'videomanager.content_handlers': {
+            'handlers': ['console'],
+            'level': os.getenv('TUBARR_LOG_LEVEL', 'DEBUG'),  #TODO
             'propagate': False,
         },
         'huey': {

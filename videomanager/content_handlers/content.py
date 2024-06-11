@@ -1,8 +1,13 @@
+import logging
 import shutil
 
 import requests
 import yt_dlp
 import os.path
+
+from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 
 class Content:
@@ -24,7 +29,8 @@ class Content:
         }
         return yt_dlp.YoutubeDL(ydl_opts)
 
-    def _get_download_opts(self, config_dir) -> yt_dlp.YoutubeDL:
+    def _get_download_opts(self) -> yt_dlp.YoutubeDL:
+        os.makedirs(os.path.join(settings.CONFIG_DIR, 'ytdlp'), exist_ok=True)
         ydl_opts = {
             'restrictfilenames': True,
             'format': 'best',
@@ -32,7 +38,7 @@ class Content:
             'progress_hooks': [self._ytdl_hook],
             'paths': {'home': self.download_path},
             'outtmpl': {'default': '[%(id)s]-%(title)s.%(ext)s'},
-            'download_archive': os.path.join(config_dir, 'ytdlp', 'downloaded.txt'),
+            'download_archive': os.path.join(settings.CONFIG_DIR, 'ytdlp', 'downloaded.txt'),
         }
         return yt_dlp.YoutubeDL(ydl_opts)
 
@@ -46,14 +52,14 @@ class Content:
             avatar_path = os.path.join(self.download_path, avatar_name)
             self._download_picture(avatar_url, avatar_path)
         else:
-            print(f"could not get avatar url for {self.channel_name}\n")
+            logger.warning(f"could not get avatar url for {self.channel_name}")
 
         if banner_url != '':
             banner_name = 'banner.jpg'
             banner_path = os.path.join(self.download_path, banner_name)
             self._download_picture(banner_url, banner_path)
         else:
-            print(f"could not get banner url for {self.channel_name}\n")
+            logger.warning(f"could not get banner url for {self.channel_name}\n")
 
         return avatar_name, banner_name
 
@@ -64,7 +70,7 @@ class Content:
             with open(path, 'wb') as f:
                 shutil.copyfileobj(response.raw, f)
         else:
-            print('Could not download picture')
+            logger.warning(f"Could not download picture")
 
     @staticmethod
     def _get_channel_pictures_url(channel_id: str) -> (str, str):
@@ -89,19 +95,18 @@ class Content:
 
                 video_id = d.get('info_dict').get('id')
                 self.downloaded = True
-                print('\nVIDEOID AT HOOK:', video_id)
-                print('\nVIDEONAME AT HOOK:', filename)
+                logger.debug(f'\nVideo Id At Ytdl Hook: {video_id}')
+                logger.debug(f'\nVideo Name At Ytdl Hook: {filename}')
                 self.filenames[video_id] = filename
 
-    def download(self, videos_dir, config_dir):
+    def download(self):
         pass
 
     def fill_info(self):
         pass
 
-    def get_info_dict(self) -> dict:
+    def get_attribute_dict(self) -> dict:
         pass
 
     def insert_into_db(self):
         pass
-

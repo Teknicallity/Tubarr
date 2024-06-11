@@ -1,10 +1,14 @@
 import os.path
+import logging
 
 from videomanager.content_handlers.content import Content
 from videomanager.models import Channel, PlaylistSource
 from django.utils import timezone
+from django.conf import settings
 
 from videomanager.content_handlers.video import Video
+
+logger = logging.getLogger(__name__)
 
 
 class Playlist(Content):
@@ -34,7 +38,7 @@ class Playlist(Content):
         self.upload_date = self.info_dict['modified_date']
         self.playlist_entries = self.info_dict['entries']
 
-    def get_info_dict(self) -> dict:
+    def get_attribute_dict(self) -> dict:
         info = {
             'type': 'playlist',
             'url': self.url,
@@ -51,24 +55,24 @@ class Playlist(Content):
         }
         return info
 
-    def download(self, videos_dir, config_dir):
-        self.download_path = os.path.join(videos_dir, self.channel_id)
+    def download(self):
+        self.download_path = os.path.join(settings.MEDIA_ROOT, self.channel_id)
 
-        ydl = self._get_download_opts(config_dir)
+        ydl = self._get_download_opts()
         ydl.download(self.url)
 
         # return self.download_path, self.filename
 
     def insert_into_db(self):
-        playlist_source, created = PlaylistSource.objects.get_or_create(name='temporary')
-        channel_entry, created = Channel.objects.get_or_create(channel_id=self.channel_id,
-                                                               defaults={
-                                                                   'name': self.channel_name,
-                                                                   'last_checked': timezone.now()
-                                                               })
-        if created:
+        playlist_source, created = PlaylistSource.objects.get_or_create(name='youtube')
+        channel_entry, channel_created = Channel.objects.get_or_create(channel_id=self.channel_id,
+                                                                       defaults={
+                                                                           'name': self.channel_name,
+                                                                           'last_checked': timezone.now()
+                                                                       })
+        if channel_created:
             self.download_channel_pictures()
-            print(f'channel created: {self.channel_name}\n')
+            logger.info(f'channel created: {self.channel_name}\n')
 
         new_playlist = channel_entry.playlist_set.create(
             playlist_id=self.playlist_id,
@@ -80,8 +84,6 @@ class Playlist(Content):
         for entry in self.playlist_entries:
             video = Video(ytdlp_info=entry)
             video.fill_info()
-            # print(entry)
-            print('FILENAMES DB', self.filenames)
             video.filenames = self.filenames
             video_db_entry = video.insert_into_db()
 

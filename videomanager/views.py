@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django.conf import settings
 from django.http import JsonResponse, HttpResponseRedirect
@@ -8,9 +9,9 @@ from django.urls import reverse
 from videomanager.content_handlers.content_handler import ContentHandler, UnknownContentTypeError, UnknownUrlError
 from .models import Channel, Video, Playlist
 
+logger = logging.getLogger(__name__)
 
 # Create your views here.
-
 
 # call this view through urls
 def index(request):
@@ -41,7 +42,7 @@ def video(request, video_id, channel_id):
     # returns /content/... which results in /channels//content/...
 
     url = 'content/' + v.channel.channel_id + '/' + v.filename
-    print("url", url)
+    logger.debug(f'Video location url: {url}')
     return render(request, "videomanager/video.html", {"video": v, "video_url": url})
 
 
@@ -49,6 +50,7 @@ def add(request):
     if request.method == 'POST':
         url = request.POST.get('url')
         err = ''
+        attribute_dictionary = ''
 
         content_handler = ContentHandler(url)
         try:
@@ -58,12 +60,10 @@ def add(request):
         except UnknownUrlError:
             err = "Not a Youtube Url"
         else:
+            attribute_dictionary = content_handler.get_attribute_dict()
             request.session['url'] = url
-            request.session['content'] = json.dumps(content_handler.get_info_dict())
-
-        info = content_handler.get_info_dict()
-
-        return JsonResponse({"url": url, "initial_info": info, "error": err})
+            request.session['content'] = json.dumps(attribute_dictionary)
+        return JsonResponse({"url": url, "initial_info": attribute_dictionary, "error": err})
 
     return render(request, 'videomanager/add.html')
 
@@ -76,12 +76,12 @@ def download(request):
         # url = request.POST.get('url')
 
         if url and content_json:
-            print('confirmed url:', url)  # debug print
+            logger.debug(f'confirmed url: {url}')
             content_info = json.loads(content_json)
             content_handler = ContentHandler(url)
             content_handler.apply_json(content_info)
 
-            content_handler.download(settings.MEDIA_ROOT, settings.CONFIG_DIR)
+            content_handler.download()
 
         del request.session['url']
         del request.session['content']
