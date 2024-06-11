@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent  # absolute path
@@ -36,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_huey',
 ]
 
 MIDDLEWARE = [
@@ -76,6 +78,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'config' / 'tubarr.db',
+    },
+    'tasks': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'config' / 'tasks.db',
     }
 }
 
@@ -121,3 +127,65 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CONFIG_DIR = BASE_DIR / 'config'
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = 'content/'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} {levelname} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{asctime} {levelname} {message}',
+            'style': '{',
+        }
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': False,
+        },
+        'videomanager': {
+            'handlers': ['console'],
+            'level': os.getenv('TUBARR_LOG_LEVEL', 'INFO'),
+            'propagate': False,
+        },
+        'huey': {
+            'level': 'INFO',
+            'handlers': ['console'],
+            'propagate': False,
+        }
+    },
+}
+
+# Directly based on django huey readme
+# https://github.com/gaiacoop/django-huey/blob/main/README.md
+DJANGO_HUEY = {
+    'default': 'download',  # this name must match with any of the queues defined below.
+    'queues': {
+        'download': {  # this name will be used in decorators below
+            'huey_class': 'huey.SqliteHuey',
+            'filename': DATABASES['tasks']['NAME'],
+            "immediate": False,
+            "results": False,
+            "store_none": False,
+            'consumer': {
+                'workers': 1,  # change to environment variable?
+                'worker_type': 'thread',
+                'health_check_interval': 2,
+            },
+        },
+    }
+}
