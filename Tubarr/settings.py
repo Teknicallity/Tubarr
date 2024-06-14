@@ -159,7 +159,7 @@ LOGGING = {
         },
         'videomanager': {
             'handlers': ['console'],
-            'level': os.getenv('TUBARR_LOG_LEVEL', 'INFO'),
+            'level': os.getenv('TUBARR_LOG_LEVEL', 'DEBUG'),
             'propagate': False,
         },
         'videomanager.content_handlers': {

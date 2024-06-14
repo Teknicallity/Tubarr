@@ -4,3 +4,4 @@
 /config/ytdlp/downloaded.txt
 /config/tasks.db-shm
 /config/tasks.db-wal
+/config/to_delete.txt
