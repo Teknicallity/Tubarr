@@ -13,8 +13,7 @@
                 <div class="channel-card">
                     <a href="{% url 'videomanager:channel' channel.channel_id %}" class="channel-link">
                         <div class="channel-icon-container">
-{#                            <img class="channel-icon" src="{% url 'videomanager:index' %}{{ 'content/' + channel.channel_id + '/avatar.jpg' }}" alt="channel icon">#}
-                            <img class="channel-icon" src="{{ MEDIA_URL }}{{ channel.channel_id }}/avatar.jpg" alt="channel icon">
+                            <img class="channel-icon" src="{{ channel.profile_image.url }}" alt="channel icon">
                         </div>
                         <p class="channel-title">{{ channel.name }}</p>
                     </a>

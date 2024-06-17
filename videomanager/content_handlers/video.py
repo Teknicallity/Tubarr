@@ -81,11 +81,15 @@ class Video(Content):
             logger.info(f'channel created: {self.channel_name}')
         logger.debug(f'filenames dictionary: {self.filenames}')
 
-        return channel_entry.video_set.create(
+        video_entry, created = channel_entry.video_set.get_or_create(
             video_id=self.video_id,
-            title=self.video_title,
-            filename=self.filenames[self.video_id],
-            description=self.video_description,
-            upload_date=datetime.strptime(self.upload_date, "%Y%m%d").date(),
-            last_checked=timezone.now()
+            defaults={
+                'title': self.video_title,
+                'filename': self.filenames[self.video_id],
+                'description': self.video_description,
+                'upload_date': datetime.strptime(self.upload_date, "%Y%m%d").date(),
+                'last_checked': timezone.now()
+            }
         )
+        video_entry.save()
+        return video_entry

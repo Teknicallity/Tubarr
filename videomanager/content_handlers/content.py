@@ -95,8 +95,8 @@ class Content:
 
                 video_id = d.get('info_dict').get('id')
                 self.downloaded = True
-                logger.debug(f'\nVideo Id At Ytdl Hook: {video_id}')
-                logger.debug(f'\nVideo Name At Ytdl Hook: {filename}')
+                logger.debug(f'Video Id At Ytdl Hook: {video_id}')
+                logger.debug(f'Video Name At Ytdl Hook: {filename}')
                 self.filenames[video_id] = filename
 
     def download(self):

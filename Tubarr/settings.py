@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_huey',
+    # 'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
@@ -164,7 +165,7 @@ LOGGING = {
         },
         'videomanager.content_handlers': {
             'handlers': ['console'],
-            'level': os.getenv('TUBARR_LOG_LEVEL', 'DEBUG'),  #TODO
+            'level': os.getenv('TUBARR_LOG_LEVEL', 'DEBUG'),  # TODO
             'propagate': False,
         },
         'huey': {

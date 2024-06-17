@@ -1,4 +1,5 @@
 {% extends "videomanager/base.html" %}
+{% load static %}
 
 {% block stylesheets %}{% endblock %}
 
@@ -8,11 +9,18 @@
 
     {% if video %}
         <p>{{ video.title }}</p>
-        <video controls width="1000">
-{#            <source src="{% url 'videomanager:index' %}{{ MEDIA_URL }}{{ video.channel.channel_id }}/{{ video.filename }}">#}
-            <source src="{% url 'videomanager:index' %}{{ video_url }}">
-        </video>
-    {% endif %}
+        <div id="video">
+            <video controls width="1000">
+                <source src="{{ video.file.url }}">
+            </video>
+        </div>
 
+        <form id="delete_form" action="{{ request.path }}delete/">
+            {% csrf_token %}
+            <label>
+                <button type="submit">Delete</button>
+            </label>
+        </form>
+    {% endif %}
 
 {% endblock %}

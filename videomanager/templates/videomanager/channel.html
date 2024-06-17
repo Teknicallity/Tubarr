@@ -39,4 +39,11 @@
         <p>No playlists available</p>
     {% endif %}
 
+    <form id="delete_form" action="{{ request.path }}delete/">
+        {% csrf_token %}
+        <label>
+            <button type="submit">Delete</button>
+        </label>
+    </form>
+
 {% endblock %}

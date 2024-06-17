@@ -5,11 +5,13 @@ from django.conf import settings
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
+from django.views.generic.edit import DeleteView
 
 from videomanager.content_handlers.content_handler import ContentHandler, UnknownContentTypeError, UnknownUrlError
 from .models import Channel, Video, Playlist
 
 logger = logging.getLogger(__name__)
+
 
 # Create your views here.
 
@@ -29,14 +31,14 @@ def channel(request, channel_id):
     return render(request, "videomanager/channel.html", {"video_list": video_list, "playlist_list": playlist_list})
 
 
-def playlist(request, playlist_id):
+def playlist(request, channel_id, playlist_id):
     p = get_object_or_404(Playlist, playlist_id=playlist_id)
     video_list = list(Video.objects.filter(playlists__playlist_id=p.playlist_id))
     # return HttpResponse("Playlist: %s" % playlist_id)
     return render(request, "videomanager/playlist.html", {"video_list": video_list})
 
 
-def video(request, video_id, channel_id):
+def video(request, channel_id, video_id):
     v = get_object_or_404(Video, video_id=video_id)
     # url = settings.MEDIA_URL + v.channel.channel_id + '/' + v.filename
     # returns /content/... which results in /channels//content/...
@@ -88,3 +90,42 @@ def download(request):
 
     # return HttpResponse("downloading")
     return HttpResponseRedirect(reverse('videomanager:add'))
+
+
+def delete_channel(request, channel_id):
+    c = get_object_or_404(Channel, channel_id=channel_id)
+    if request.method == "GET":
+        context = {'delete_url': reverse('videomanager:delete_channel', args=(c.channel_id,))}
+        return render(request, 'videomanager/delete_redirect.html', context)
+
+    if request.method == "POST":
+        c.delete()
+        return HttpResponseRedirect(reverse('videomanager:index'))
+
+
+def delete_playlist(request, channel_id, playlist_id):
+    p = get_object_or_404(Playlist, playlist_id=playlist_id)
+    if request.method == "GET":
+        context = {'delete_url': reverse('videomanager:delete_playlist', args=(p.channel.channel_id, p.playlist_id,))}
+        return render(request, 'videomanager/delete_redirect.html', context)
+
+    if request.method == "POST":
+        p.delete()
+        if p.channel.is_empty():
+            p.channel.delete()
+            return HttpResponseRedirect(reverse('videomanager:index'))
+        return HttpResponseRedirect(reverse('videomanager:channel', args=(p.channel.channel_id,)))
+
+
+def delete_video(request, channel_id, video_id):
+    v = get_object_or_404(Video, video_id=video_id)
+    if request.method == "GET":
+        context = {'delete_url': reverse('videomanager:delete_video', args=(v.channel.channel_id, v.video_id,))}
+        return render(request, 'videomanager/delete_redirect.html', context)
+
+    if request.method == "POST":
+        v.delete()
+        if v.channel.is_empty():
+            v.channel.delete()
+            return HttpResponseRedirect(reverse('videomanager:index'))
+        return HttpResponseRedirect(reverse('videomanager:channel', args=(v.channel.channel_id,)))
