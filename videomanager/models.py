@@ -48,7 +48,10 @@ class Channel(models.Model):
             self.profile_image.delete(save=True)
             self.banner_image.close()
             self.banner_image.delete(save=True)
-            os.rmdir(os.path.join(settings.MEDIA_ROOT, self.channel_id))
+            try:
+                os.rmdir(os.path.join(settings.MEDIA_ROOT, self.channel_id))
+            except FileNotFoundError:
+                logger.info(f'Channel {self.channel_id} has no directory')
             super(Channel, self).delete(*args, **kwargs)
 
     def is_empty(self):
@@ -114,15 +117,21 @@ class Video(models.Model):
 
     def save(self, *args, **kwargs):
         # Set the video_file path using the channel_id and video_name
-        self.file.name = f'{self.channel.channel_id}/{self.filename}'
+        if self.channel.channel_id and self.filename:
+            self.file.name = f'{self.channel.channel_id}/{self.filename}'
+        else:
+            logger.warning(f'Video {self.video_id} has no filename')
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         # temp_video = self
         try:
-            logger.debug(f'Deleting video file: {self.file.name}')
-            self.file.close()
-            self.file.delete(save=True)
+            if os.path.isfile(self.file.path):
+                logger.debug(f'Deleting video file: {self.file.name}')
+                self.file.close()
+                self.file.delete(save=True)
+            else:
+                logger.info(f'No file for video {self.filename}')
         except PermissionError as e:
             logger.warning("Video file could not be deleted. In use by another process")
             raise e
