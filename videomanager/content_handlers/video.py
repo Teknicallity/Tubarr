@@ -15,14 +15,6 @@ class Video(Content):
         super().__init__()
         self.url = url
 
-        self.video_title = None
-        self.video_id = None
-        self.video_description = None
-        self.video_categories = None
-        self.video_tags = None
-        self.thumbnail_url = None
-        self.upload_date = None
-
         self.info_dict = ytdlp_info
 
     def fill_info(self):
@@ -58,10 +50,13 @@ class Video(Content):
         }
         return info
 
-    def download(self):
-        self.download_path = os.path.join(settings.MEDIA_ROOT, self.channel_id)
+    def download(self, no_ytdlp_archive: bool = False, download_path: str = None):
+        if download_path:
+            self.download_path = download_path
+        else:
+            self.download_path = os.path.join(settings.MEDIA_ROOT, self.channel_id)
 
-        ydl = self._get_download_opts()
+        ydl = self._get_download_opts(no_ytdlp_archive)
         ydl.download(self.url)
 
         # return self.download_path, self.filename

@@ -1,11 +1,14 @@
 import logging
 import shutil
+import json
 
 import requests
 import yt_dlp
 import os.path
 
 from django.conf import settings
+
+from videomanager.content_handlers.ytdlp_logger import YtDlpLogger
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +20,23 @@ class Content:
         self.downloaded = False
         self.channel_id = None
         self.channel_name = None
+        self.type = None
         self.filenames = {'t': 'emp'}
+
+        self.video_title = None
+        self.video_id = None
+        self.video_description = None
+        self.video_categories = None
+        self.video_tags = None
+        self.thumbnail_url = None
+        self.upload_date = None
+
+        self.playlist_id = None
+        self.playlist_name = None
+        self.playlist_entry_count = None
+
+        self.info_dict = None
+        self.playlist_entries = None
 
     @staticmethod
     def _initial_ydl_opts() -> yt_dlp.YoutubeDL:  # add error hook?
@@ -29,17 +48,30 @@ class Content:
         }
         return yt_dlp.YoutubeDL(ydl_opts)
 
-    def _get_download_opts(self) -> yt_dlp.YoutubeDL:
+    def _get_existing_video_log_identifier(self):
+        if self.type and self.type == 'video':
+            return ": has already been recorded in the archive"
+        else:
+            return None
+
+    def _set_already_downloaded(self, found_message):
+        # self.downloaded = True
+        return print(f'FOUND ALREADY DOWNLAODED: {found_message}')
+
+    def _get_download_opts(self, no_ytdlp_archive: bool) -> yt_dlp.YoutubeDL:
         os.makedirs(os.path.join(settings.CONFIG_DIR, 'ytdlp'), exist_ok=True)
         ydl_opts = {
             'restrictfilenames': True,
             'format': 'best',
             'quiet': True,
+            'logger': YtDlpLogger(self._get_existing_video_log_identifier(), self._set_already_downloaded),
             'progress_hooks': [self._ytdl_hook],
             'paths': {'home': self.download_path},
             'outtmpl': {'default': '[%(id)s]-%(title)s.%(ext)s'},
             'download_archive': os.path.join(settings.CONFIG_DIR, 'ytdlp', 'downloaded.txt'),
         }
+        if no_ytdlp_archive:
+            del ydl_opts['download_archive']
         return yt_dlp.YoutubeDL(ydl_opts)
 
     def download_channel_pictures(self) -> (str, str):
@@ -99,7 +131,7 @@ class Content:
                 logger.debug(f'Video Name At Ytdl Hook: {filename}')
                 self.filenames[video_id] = filename
 
-    def download(self):
+    def download(self, no_ytdlp_archive: bool = False, download_path: str = None):
         pass
 
     def fill_info(self):

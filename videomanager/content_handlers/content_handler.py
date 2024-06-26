@@ -79,10 +79,10 @@ class ContentHandler:
     def get_attribute_dict(self) -> dict:
         return self.content_object.get_attribute_dict()
 
-    def download(self):
-        self.content_object.download()
+    def download(self, insert_to_db: bool = True, no_ytdlp_archive: bool = False, download_path: str = None):
+        self.content_object.download(no_ytdlp_archive, download_path)
 
-        if self.content_object.downloaded:
+        if insert_to_db and self.content_object.downloaded:
             self.content_object.insert_into_db()
 
     def apply_json(self, info: dict):

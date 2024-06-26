@@ -16,15 +16,6 @@ class Playlist(Content):
         super().__init__()
         self.url = url
 
-        self.thumbnail_url = None
-        self.playlist_id = None
-        self.playlist_name = None
-        self.playlist_entry_count = None
-        self.upload_date = None
-
-        self.info_dict = None
-        self.playlist_entries = None
-
     def fill_info(self):
         ydl = self._initial_ydl_opts()
         self.info_dict = ydl.extract_info(self.url, download=False)
@@ -55,10 +46,13 @@ class Playlist(Content):
         }
         return info
 
-    def download(self):
-        self.download_path = os.path.join(settings.MEDIA_ROOT, self.channel_id)
+    def download(self, no_ytdlp_archive: bool = False, download_path: str = None):
+        if download_path:
+            self.download_path = download_path
+        else:
+            self.download_path = os.path.join(settings.MEDIA_ROOT, self.channel_id)
 
-        ydl = self._get_download_opts()
+        ydl = self._get_download_opts(no_ytdlp_archive)
         ydl.download(self.url)
 
         # return self.download_path, self.filename
