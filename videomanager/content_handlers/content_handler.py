@@ -55,7 +55,7 @@ class ContentHandler:
         """Parses the url"""
         if _is_valid_url(self.url):
             try:
-                self.content_type = _parse_content_type(self.url)
+                self.content_type = self._parse_content_type()
             except UnknownContentTypeError as e:
                 logger.warning(f'{e}: Not a valid content type: {self.url}')
                 raise e
@@ -98,6 +98,22 @@ class ContentHandler:
                 self.content_object = Playlist()
                 self.content_object.__dict__ = info
 
+    def _parse_content_type(self) -> str:
+        parsed_url = urlparse(self.url)
+        query_params = parse_qs(parsed_url.query)
+        if parsed_url.path.startswith('/channel/'):
+            return 'channel'
+        elif parsed_url.path.startswith('/watch'):
+            if playlist_id := query_params.get('list'):
+                self.url = f'https://www.youtube.com/playlist?list={playlist_id[0]}'
+                return 'playlist'
+            else:
+                return 'video'
+        elif parsed_url.path.startswith('/playlist'):
+            return 'playlist'
+        else:
+            raise UnknownContentTypeError
+
 
 def _is_valid_url(url: str) -> bool:
     """
@@ -111,19 +127,3 @@ def _is_valid_url(url: str) -> bool:
     else:
         return False
     # return True if re.search(pattern, url) else False
-
-
-def _parse_content_type(url: str) -> str:
-    parsed_url = urlparse(url)
-    query_params = parse_qs(parsed_url.query)
-    if parsed_url.path.startswith('/channel/'):
-        return 'channel'
-    elif parsed_url.path.startswith('/watch'):
-        if 'list' in query_params:
-            return 'playlist'
-        else:
-            return 'video'
-    elif parsed_url.path.startswith('/playlist'):
-        return 'playlist'
-    else:
-        raise UnknownContentTypeError
