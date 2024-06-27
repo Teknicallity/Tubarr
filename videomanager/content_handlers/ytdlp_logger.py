@@ -1,11 +1,12 @@
 import logging
+from typing import Callable
 
 logger = logging.getLogger(__name__)
 
 
 class YtDlpLogger:
-    def __init__(self, trigger_string: str | None = None, callback=None):
-        self.trigger_string = trigger_string
+    def __init__(self, string_searches: list[str] = None, callback: Callable = None):
+        self.string_searches = string_searches
         self.callback = callback
 
     def debug(self, msg):
@@ -30,5 +31,7 @@ class YtDlpLogger:
         self.check_trigger(msg)
 
     def check_trigger(self, message):
-        if self.trigger_string and self.trigger_string in message:
-            self.callback(message)
+        if self.string_searches:
+            for search in self.string_searches:
+                if search in message:
+                    self.callback(message)

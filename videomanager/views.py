@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views.generic.edit import DeleteView
 
-from videomanager.content_handlers.content_handler import ContentHandler, UnknownContentTypeError, UnknownUrlError
+from videomanager.content_handlers.content_factory import ContentFactory, UnknownContentTypeError, UnknownUrlError
 from .models import Channel, Video, Playlist
 
 logger = logging.getLogger(__name__)
@@ -54,17 +54,16 @@ def add(request):
         err = ''
         attribute_dictionary = ''
 
-        content_handler = ContentHandler(url)
+        content = ContentFactory.get_content_object(url)
         try:
-            content_handler.fill_info()
+            content.fill_info()
         except UnknownContentTypeError:
             err = "Could not identify Youtube content type"
         except UnknownUrlError:
             err = "Not a Youtube Url"
         else:
-            attribute_dictionary = content_handler.get_attribute_dict()
+            attribute_dictionary = content.get_attribute_dict()
             request.session['url'] = url
-            request.session['content'] = json.dumps(attribute_dictionary)
         return JsonResponse({"url": url, "initial_info": attribute_dictionary, "error": err})
 
     return render(request, 'videomanager/add.html')
@@ -73,20 +72,16 @@ def add(request):
 def download(request):
     if request.method == 'POST':
         url = request.session.get('url')
-        content_json = request.session.get('content')
+        if url:
+            logger.debug(f'Starting url download: {url}')
+            content = ContentFactory.get_content_object(url)
+            content.fill_info()
+            content.download()
 
-        # url = request.POST.get('url')
-
-        if url and content_json:
-            logger.debug(f'confirmed url: {url}')
-            content_info = json.loads(content_json)
-            content_handler = ContentHandler(url)
-            content_handler.apply_json(content_info)
-
-            content_handler.download()
+            if content.downloaded:
+                content.insert_into_db()
 
         del request.session['url']
-        del request.session['content']
 
     # return HttpResponse("downloading")
     return HttpResponseRedirect(reverse('videomanager:add'))
