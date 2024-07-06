@@ -38,7 +38,7 @@ Built on Django and utilizing yt-dlp for downloading videos, Tubarr offers a use
 
 - The search bar is not functional.
 - Currently, the application is thread limited. Either python threads or django works will be implemented.
-- Better managing of videos. There is no easy way of deleting a video.
+- Multiple content entry selection with actions
 - Improving the UI to be more modern
 - A visible settings page
 

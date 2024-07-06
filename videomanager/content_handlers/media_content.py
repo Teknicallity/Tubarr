@@ -37,6 +37,18 @@ class MediaContent:
 
     def _set_already_downloaded(self, found_message):
         # self.downloaded = True
+        # found from ytdlp archive file
+        #   "[download] lvaWJs9KZTI: has already been recorded in the archive"
+        # found video file existing. not in archive.
+        #   [download] C:\Users\Josh\Documents\Web_Dev\Tubarr\media\UC4w1YQAJMWOz4qtxinq55LQ\[lvaWJs9KZTI]-New_Intel_Motherboards_A770_AI_Demos_Arc_GPUs_and_MORE_-_Intel_@_ASRock_s_Computex_2024_Booth.mp4 has already been downloaded
+        # video exists, but downloading playist
+        exists_in_archive = ': has already been recorded in the archive'
+        exists_on_disk = ' has already been downloaded'
+        if exists_in_archive in found_message:
+            # check if on disk
+            pass
+        elif exists_on_disk in found_message:
+            pass
         return print(f'FOUND ALREADY DOWNLAODED: {found_message}')
 
     def _ytdl_hook(self, d):
