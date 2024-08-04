@@ -5,14 +5,14 @@ import logging
 from videomanager.content_handlers.media_content import MediaContent
 from videomanager.content_handlers.ytdlp import Ydl
 from videomanager.content_handlers.ytdlp_options import YdlDownloadOptions
-from videomanager.models import Channel
+from videomanager.models import Channel, Video
 from django.utils import timezone
 from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
 
-class Video(MediaContent):
+class VideoHandler(MediaContent):
     def __init__(self, url: str = None, ytdlp_info=None):
         super().__init__()
         self.url = url
@@ -51,24 +51,22 @@ class Video(MediaContent):
         }
         return info
 
-    def download(self, ydl_download_tracker: bool = True):
-        # if download_path:
-        #     self.download_path = download_path
-        # else:
-        self.download_path = os.path.join(settings.MEDIA_ROOT, self.channel_id)
+    def download(self, track_with_ytdlp_archive: bool = True):
+        self.insert_info_into_db()
 
+        self.download_path = os.path.join(settings.MEDIA_ROOT, self.channel_id)
         options = YdlDownloadOptions(
             trigger_string=[': has already been recorded in the archive'],
             trigger_callback=self._set_already_downloaded,
             ytdlp_hook=self._ytdl_hook,
             download_path=f'{self.download_path}',
-            ydl_download_tracker=ydl_download_tracker
+            track_with_ytdlp_archive=track_with_ytdlp_archive
         )
         Ydl.download(self.url, options)
 
         # return self.download_path, self.filename
 
-    def insert_into_db(self):
+    def insert_info_into_db(self):
         channel_entry, channel_created = Channel.objects.get_or_create(
             channel_id=self.channel_id,
             defaults={
@@ -87,10 +85,10 @@ class Video(MediaContent):
             video_id=self.video_id,
             defaults={
                 'title': self.video_title,
-                'filename': self.filenames[self.video_id],
                 'description': self.video_description,
                 'upload_date': datetime.strptime(self.upload_date, "%Y%m%d").date(),
-                'last_checked': timezone.now()
+                'last_checked': timezone.now(),
+                'status': Video.STATUS.QUEUED,
             }
         )
         video_entry.save()

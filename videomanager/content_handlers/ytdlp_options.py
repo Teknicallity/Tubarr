@@ -8,7 +8,7 @@ class YdlDownloadOptions:
     trigger_callback: Callable
     ytdlp_hook: Callable
     download_path: str
-    ydl_download_tracker: bool = True
+    track_with_ytdlp_archive: bool = True
 
 
 @dataclass

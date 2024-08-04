@@ -1,6 +1,8 @@
 import logging
 import os
 
+from videomanager.models import Video
+
 logger = logging.getLogger(__name__)
 
 
@@ -35,7 +37,8 @@ class MediaContent:
         else:
             return None
 
-    def _set_already_downloaded(self, found_message):
+    @staticmethod
+    def _set_already_downloaded(found_message):
         # self.downloaded = True
         # found from ytdlp archive file
         #   "[download] lvaWJs9KZTI: has already been recorded in the archive"
@@ -51,18 +54,20 @@ class MediaContent:
             pass
         return print(f'FOUND ALREADY DOWNLAODED: {found_message}')
 
-    def _ytdl_hook(self, d):
+    def _ytdl_hook(self, d):  # ytdlp requires hooks to have self and d as positional arguments?
         if d['status'] == 'finished':
             if d['info_dict']:
                 filename = os.path.basename(d.get('info_dict').get('filename'))
-
                 video_id = d.get('info_dict').get('id')
-                self.downloaded = True
                 logger.debug(f'Video Id At Ytdl Hook: {video_id}')
                 logger.debug(f'Video Name At Ytdl Hook: {filename}')
-                self.filenames[video_id] = filename
 
-    def download(self, ydl_download_tracker: bool = True):
+                v = Video.objects.get(video_id=video_id)
+                v.filename = filename
+                v.status = v.STATUS.DOWNLOADED
+                v.save()
+
+    def download(self, track_with_ytdlp_archive: bool = True):
         raise NotImplementedError
 
     def fill_info(self):
@@ -71,5 +76,5 @@ class MediaContent:
     def get_attribute_dict(self) -> dict:
         raise NotImplementedError
 
-    def insert_into_db(self):
+    def insert_info_into_db(self):
         raise NotImplementedError

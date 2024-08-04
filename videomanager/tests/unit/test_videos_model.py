@@ -8,7 +8,6 @@ from videomanager.models import Video, Channel
 class VideoTestCase(TestCase):
     fixtures = ['test_content']
 
-
     def test_delete_video(self):
         video = Video.objects.get(pk=1)
         video.delete()

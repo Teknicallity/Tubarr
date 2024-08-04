@@ -105,6 +105,11 @@ class Playlist(models.Model):
 
 
 class Video(models.Model):
+    class STATUS(models.TextChoices):
+        QUEUED = 'QU', 'Queued'
+        DOWNLOADED = 'DL', 'Downloaded'
+        ERRORED = 'ER', 'Error'
+
     video_id = models.CharField(max_length=15)
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
@@ -114,11 +119,19 @@ class Video(models.Model):
     last_checked = models.DateTimeField()
     monitored = models.BooleanField(default=False)
     file = models.FileField(storage=ExistingFileStorage())
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS.choices,
+        default=STATUS.QUEUED
+    )
 
     def save(self, *args, **kwargs):
         # Set the video_file path using the channel_id and video_name
-        if self.channel.channel_id and self.filename:
+        if self.channel.channel_id and self.filename and self.status == self.STATUS.DOWNLOADED:
             self.file.name = f'{self.channel.channel_id}/{self.filename}'
+            logger.info(f'Video {self.video_id} has been saved with file on disk')
+        elif self.status == self.STATUS.QUEUED:
+            logger.info(f'Video {self.video_id} information saved')
         else:
             logger.warning(f'Video {self.video_id} has no filename')
         super().save(*args, **kwargs)
@@ -126,7 +139,7 @@ class Video(models.Model):
     def delete(self, *args, **kwargs):
         # temp_video = self
         try:
-            if os.path.isfile(self.file.path):
+            if self.file and self.file.name and os.path.isfile(self.file.path):
                 logger.debug(f'Deleting video file: {self.file.name}')
                 self.file.close()
                 self.file.delete(save=True)

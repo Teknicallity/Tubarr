@@ -20,7 +20,7 @@ class TestVideoHandler(TestCase):
         url = 'https://www.youtube.com/watch?v=tSVNrZlWzIg'
         content = ContentFactory.get_content_object(url)
         content.fill_info()
-        self.assertEqual(type(content).__name__, 'Video')
+        self.assertEqual(type(content).__name__, 'VideoHandler')
         self.assertEqual(content.video_id, 'tSVNrZlWzIg')
         self.assertEqual(content.channel_id, 'UCYzzcdVEQd37sh_FNDH3ByA')
         self.assertEqual(content.video_title, 'Asus Zenpad 8.0 Video Test')
@@ -33,7 +33,7 @@ class TestVideoHandler(TestCase):
 
         content = ContentFactory.get_content_object(url)
         content.fill_info()
-        content.download(ydl_download_tracker=False)
+        content.download(track_with_ytdlp_archive=False)
 
         filename = '[tSVNrZlWzIg]-Asus_Zenpad_8.0_Video_Test.mp4'
         full_path = os.path.join(settings.MEDIA_ROOT, content.channel_id, filename)

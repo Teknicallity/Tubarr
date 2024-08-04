@@ -9,7 +9,7 @@ class TestPlaylistHandler(TestCase):
         url = 'https://www.youtube.com/playlist?list=PL10NWKboioZT3cOSnRtX0oEghpj_4wKAv'
         content = ContentFactory.get_content_object(url)
         content.fill_info()
-        self.assertEqual(type(content).__name__, 'Playlist')
+        self.assertEqual(type(content).__name__, 'PlaylistHandler')
         self.assertEqual(content.playlist_id, 'PL10NWKboioZT3cOSnRtX0oEghpj_4wKAv')
         self.assertEqual(content.channel_id, 'UC4w1YQAJMWOz4qtxinq55LQ')
         self.assertEqual(content.playlist_name, 'Level1 Mini Series: Adventures at AMD')

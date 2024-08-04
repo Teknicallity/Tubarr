@@ -3,8 +3,8 @@ import logging
 from urllib.parse import urlparse, parse_qs
 
 from videomanager.content_handlers.media_content import MediaContent
-from videomanager.content_handlers.playlist import Playlist
-from videomanager.content_handlers.video import Video
+from videomanager.content_handlers.playlisthandler import PlaylistHandler
+from videomanager.content_handlers.videohandler import VideoHandler
 
 logger = logging.getLogger(__name__)
 
@@ -34,10 +34,10 @@ class ContentFactory:
                         raise NotImplementedError
 
                     case 'video':
-                        return Video(url)
+                        return VideoHandler(url)
 
                     case 'playlist':
-                        return Playlist(url)
+                        return PlaylistHandler(url)
 
         else:
             logger.warning(f'Unknown URL: {url}')

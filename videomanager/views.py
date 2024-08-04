@@ -28,7 +28,11 @@ def channel(request, channel_id):
     video_list = list(Video.objects.filter(channel__channel_id=c_id))
     playlist_list = list(Playlist.objects.filter(channel__channel_id=c_id))
 
-    return render(request, "videomanager/channel.html", {"video_list": video_list, "playlist_list": playlist_list})
+    return render(
+        request,
+        "videomanager/channel.html",
+        {"video_list": video_list, "playlist_list": playlist_list}
+    )
 
 
 def playlist(request, channel_id, playlist_id):
@@ -77,9 +81,6 @@ def download(request):
             content = ContentFactory.get_content_object(url)
             content.fill_info()
             content.download()
-
-            if content.downloaded:
-                content.insert_into_db()
 
         del request.session['url']
 

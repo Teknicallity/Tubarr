@@ -6,6 +6,7 @@ import os
 import shutil
 import yt_dlp
 from django.conf import settings
+from django_huey import task
 
 from videomanager.content_handlers.ytdlp_logger import YtDlpLogger
 from videomanager.content_handlers.ytdlp_options import YdlDownloadOptions
@@ -32,6 +33,7 @@ class Ydl:
     @staticmethod
     def download_channel_picture(channel_id: str) -> (str, str):
         download_path = os.path.join(settings.MEDIA_ROOT, channel_id)
+        os.makedirs(download_path, exist_ok=True)
         avatar_url, banner_url = _get_channel_pictures_url(channel_id)
         avatar_name = ''
         banner_name = ''
@@ -53,6 +55,7 @@ class Ydl:
         return avatar_name, banner_name
 
     @staticmethod
+    @task()
     def download(url: str, ydl_opts: YdlDownloadOptions):
         os.makedirs(os.path.join(settings.CONFIG_DIR, 'ytdlp'), exist_ok=True)
         options = {
@@ -65,7 +68,7 @@ class Ydl:
             'outtmpl': {'default': '[%(id)s]-%(title)s.%(ext)s'},
             'download_archive': os.path.join(settings.CONFIG_DIR, 'ytdlp', 'downloaded.txt'),
         }
-        if not ydl_opts.ydl_download_tracker:
+        if not ydl_opts.track_with_ytdlp_archive:
             del options['download_archive']
 
         yt_dlp.YoutubeDL(options).download(url)
@@ -88,9 +91,17 @@ def _get_channel_pictures_url(channel_id: str) -> (str, str):
 
 
 def _download_picture(url: str, path: str):
-    response = requests.get(url, stream=True)
-    if response.status_code == 200:
+    try:
+        response = requests.get(url, stream=True)
+        response.raise_for_status()
+
         with open(path, 'wb') as f:
             shutil.copyfileobj(response.raw, f)
-    else:
-        logger.warning(f"Could not download picture")
+        logger.info(f"Downloaded picture from {url} to {path}")
+
+    except requests.RequestException as e:
+        logger.warning(f"Could not download picture from {url}: {e}")
+    except FileNotFoundError as e:
+        logger.error(f"File not found error when saving picture to {path}: {e}")
+    except Exception as e:
+        logger.error(f"An unexpected error occurred: {e}")
