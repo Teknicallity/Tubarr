@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from django.utils.timezone import get_current_timezone
 from django.test import TestCase
 
 from videomanager.models import Video, Channel
@@ -23,8 +23,9 @@ class VideoTestCase(TestCase):
             channel=channel,
             title='Test Video Saving',
             filename=filename,
-            upload_date=datetime.now(),
-            last_checked=datetime.now()
+            upload_date=datetime.now(tz=get_current_timezone()),
+            last_checked=datetime.now(tz=get_current_timezone()),
+            status=Video.STATUS.DOWNLOADED,
         )
         video.save()
         local_file_path = f'{video.channel.channel_id}/{video.filename}'

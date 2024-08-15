@@ -41,7 +41,8 @@ class TestVideoHandler(TestCase):
 
         self.assertTrue(os.path.exists(channel_path))
         self.assertTrue(os.path.isfile(full_path))
-
+        os.remove(os.path.join(f'{channel_path}', 'avatar.jpg'))
+        os.remove(os.path.join(f'{channel_path}', 'banner.jpg'))
         os.remove(full_path)
         os.rmdir(channel_path)
 
