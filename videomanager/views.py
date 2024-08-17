@@ -25,7 +25,7 @@ def index(request):
 def channel(request, channel_id):
     c = get_object_or_404(Channel, channel_id=channel_id)
     c_id = c.channel_id
-    video_list = list(Video.objects.filter(channel__channel_id=c_id))
+    video_list = list(Video.objects.filter(channel__channel_id=c_id, status=Video.STATUS.DOWNLOADED))
     playlist_list = list(Playlist.objects.filter(channel__channel_id=c_id))
 
     return render(

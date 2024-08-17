@@ -10,7 +10,7 @@
     {% if video %}
         <p>{{ video.title }}</p>
         <div id="video">
-            {% if video.file.url is None %}
+            {% if video.file.url is not None %}
                 <video controls width="1000">
                     <source src="{{ video.file.url }}">
                 </video>
