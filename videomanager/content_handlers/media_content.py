@@ -54,7 +54,8 @@ class MediaContent:
             pass
         return print(f'FOUND ALREADY DOWNLAODED: {found_message}')
 
-    def _ytdl_hook(self, d):  # ytdlp requires hooks to have self and d as positional arguments?
+    @staticmethod
+    def _ytdl_hook(d):  # causes the serialization error when not a static method, with self used
         if d['status'] == 'finished':
             if d['info_dict']:
                 filename = os.path.basename(d.get('info_dict').get('filename'))
