@@ -6,3 +6,4 @@
 !/manage.py
 !/requirements.txt
 !/start.sh
+!/supervisord.conf

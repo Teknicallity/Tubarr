@@ -10,8 +10,8 @@ mkdir -p media
 
 python3 manage.py migrate
 
-python3 manage.py runserver 3020
+if [ "$DISABLE_BACKGROUND_TASKS" != "True" ]; then
+  supervisord -c supervisord.conf
+fi
 
-#if [ "$LD_DISABLE_BACKGROUND_TASKS" != "True" ]; then
-#  supervisord -c supervisord.conf
-#fi
+python3 manage.py runserver "0.0.0.0:${TB_SERVER_PORT}"
