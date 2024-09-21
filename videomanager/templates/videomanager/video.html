@@ -14,6 +14,7 @@
                 <video controls width="1000">
                     <source src="{{ video.file.url }}">
                 </video>
+                <img src="{{ video.thumbnail.url }}" alt="thumbnail">
             {% else %}
                 <p style="color: red; margin: 2rem 0 2rem 0">Cannot find video file</p>
             {% endif %}

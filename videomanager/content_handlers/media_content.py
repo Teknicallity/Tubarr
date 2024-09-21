@@ -62,10 +62,19 @@ class MediaContent:
             if d['info_dict']:
                 filename = os.path.basename(d.get('info_dict').get('filename'))
                 video_id = d.get('info_dict').get('id')
+                channel_id = d.get('info_dict').get('channel_id')
+                thumbnail_url = d.get('info_dict').get('thumbnail')
                 logger.debug(f'Video Id At Ytdl Hook: {video_id}')
                 logger.debug(f'Video Name At Ytdl Hook: {filename}')
 
+                relative_thumbnail_filepath = Ydl.download_thumbnail(
+                    thumbnail_url,
+                    channel_id,
+                    os.path.splitext(filename)[0]
+                )
+
                 v = Video.objects.get(video_id=video_id)
+                v.thumbnail.name = relative_thumbnail_filepath
                 v.filename = filename
                 v.status = v.STATUS.DOWNLOADED
                 v.save()

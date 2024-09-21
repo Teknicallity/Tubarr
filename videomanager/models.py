@@ -1,6 +1,7 @@
 import datetime
 import os.path
 import logging
+import shutil
 
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
@@ -49,9 +50,11 @@ class Channel(models.Model):
             self.banner_image.close()
             self.banner_image.delete(save=True)
             try:
-                os.rmdir(os.path.join(settings.MEDIA_ROOT, self.channel_id))
+                shutil.rmtree(os.path.join(settings.MEDIA_ROOT, self.channel_id))
             except FileNotFoundError:
                 logger.info(f'Channel {self.channel_id} has no directory')
+            except Exception as e:
+                logger.error(e)
             super(Channel, self).delete(*args, **kwargs)
 
     def is_empty(self):
@@ -119,6 +122,7 @@ class Video(models.Model):
     last_checked = models.DateTimeField()
     monitored = models.BooleanField(default=False)
     file = models.FileField(storage=ExistingFileStorage())
+    thumbnail = models.ImageField(storage=ExistingFileStorage(), default='default.jpg')
     status = models.CharField(
         max_length=10,
         choices=STATUS.choices,
@@ -128,7 +132,7 @@ class Video(models.Model):
     def save(self, *args, **kwargs):
         # Set the video_file path using the channel_id and video_name
         if self.channel.channel_id and self.filename and self.status == self.STATUS.DOWNLOADED:
-            self.file.name = f'{self.channel.channel_id}/{self.filename}'
+            self.file.name = os.path.join(self.channel.channel_id, self.filename)
             logger.info(f'Video {self.video_id} has been saved with file on disk')
         elif self.status == self.STATUS.QUEUED:
             logger.info(f'Video {self.video_id} information saved')
@@ -144,13 +148,20 @@ class Video(models.Model):
                 self.file.close()
                 self.file.delete(save=True)
             else:
-                logger.info(f'No file for video {self.filename}')
+                logger.info(f'No video file to delete for video "{self.title}"')
+
+            if self.thumbnail and self.thumbnail.name and os.path.isfile(self.thumbnail.path):
+                logger.debug(f'Deleting thumbnail file: {self.thumbnail.name}')
+                self.thumbnail.close()
+                self.thumbnail.delete(save=True)
+            else:
+                logger.info(f'No thumbnail to delete for video {self.title}')
         except PermissionError as e:
             logger.warning("Video file could not be deleted. In use by another process")
             raise e
         else:
             line = delete_video_id_from_ytdlp_archive(self.video_id)
-            logger.debug(f'downloaded.txt line: {line}')
+            logger.debug(f'Deleted downloaded.txt line: {line}')
             channel = self.channel
             try:
                 logger.debug(f'Deleting video entry: {self.video_id}')

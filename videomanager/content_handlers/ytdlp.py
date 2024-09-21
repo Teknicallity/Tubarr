@@ -55,6 +55,22 @@ class Ydl:
         return avatar_name, banner_name
 
     @staticmethod
+    def download_thumbnail(thumbnail_url: str, channel_id: str, output_basename: str) -> str:
+        # https://stackoverflow.com/questions/49825421/download-file-using-python-without-knowing-its-extension-content-type-strea
+        absolute_thumbnails_dir = os.path.join(settings.MEDIA_ROOT, channel_id, "thumbnails")
+        os.makedirs(absolute_thumbnails_dir, exist_ok=True)
+
+        r = requests.get(thumbnail_url)
+        extension = r.headers['content-type'].split('/')[-1]
+        absolute_thumbnail_filepath = os.path.join(absolute_thumbnails_dir, f"{output_basename}.{extension}")
+
+        with open(absolute_thumbnail_filepath, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=1024):
+                f.write(chunk)
+
+        return os.path.join(channel_id, "thumbnails", f"{output_basename}.{extension}")
+
+    @staticmethod
     @task()
     def download(url: str, ydl_opts: YdlDownloadOptions):
         os.makedirs(os.path.join(settings.CONFIG_DIR, 'ytdlp'), exist_ok=True)
@@ -67,6 +83,7 @@ class Ydl:
             'paths': {'home': ydl_opts.download_path},
             'outtmpl': {'default': '[%(id)s]-%(title)s.%(ext)s'},
             'download_archive': os.path.join(settings.CONFIG_DIR, 'ytdlp', 'downloaded.txt'),
+            # 'writethumbnail': True,  # writes to the given paths home directory, not thumbnails directory
         }
         if not ydl_opts.track_with_ytdlp_archive:
             del options['download_archive']
@@ -90,18 +107,18 @@ def _get_channel_pictures_url(channel_id: str) -> (str, str):
     return avatar, banner
 
 
-def _download_picture(url: str, path: str):
+def _download_picture(url: str, filepath: str):
     try:
         response = requests.get(url, stream=True)
         response.raise_for_status()
 
-        with open(path, 'wb') as f:
+        with open(filepath, 'wb') as f:
             shutil.copyfileobj(response.raw, f)
-        logger.info(f"Downloaded picture from {url} to {path}")
+        logger.info(f"Downloaded picture from {url} to {filepath}")
 
     except requests.RequestException as e:
         logger.warning(f"Could not download picture from {url}: {e}")
     except FileNotFoundError as e:
-        logger.error(f"File not found error when saving picture to {path}: {e}")
+        logger.error(f"File not found error when saving picture to {filepath}: {e}")
     except Exception as e:
         logger.error(f"An unexpected error occurred: {e}")
