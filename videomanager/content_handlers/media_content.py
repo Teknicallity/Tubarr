@@ -1,7 +1,9 @@
 import logging
 import os
 
-from videomanager.models import Video
+from videomanager.content_handlers.ytdlp import Ydl
+from videomanager.models import Video, Channel
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -78,4 +80,16 @@ class MediaContent:
         raise NotImplementedError
 
     def insert_info_into_db(self):
-        raise NotImplementedError
+        channel_entry, channel_created = Channel.objects.get_or_create(
+            channel_id=self.channel_id,
+            defaults={
+                'name': self.channel_name,
+                'last_checked': timezone.now()
+            }
+        )
+        if channel_created:
+            avatar_filename, banner_filename = Ydl.download_channel_picture(self.channel_id)
+            channel_entry.profile_pic_path = avatar_filename
+            channel_entry.save()
+            logger.info(f'channel created: {self.channel_name}')
+        return channel_entry

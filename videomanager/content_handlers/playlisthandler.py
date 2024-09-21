@@ -64,16 +64,7 @@ class PlaylistHandler(MediaContent):
 
     def insert_info_into_db(self):
         playlist_source, created = PlaylistSource.objects.get_or_create(name='youtube')
-        channel_entry, channel_created = Channel.objects.get_or_create(channel_id=self.channel_id,
-                                                                       defaults={
-                                                                           'name': self.channel_name,
-                                                                           'last_checked': timezone.now()
-                                                                       })
-        if channel_created:
-            avatar_filename, banner_filename = Ydl.download_channel_picture(self.channel_id)
-            channel_entry.profile_pic_path = avatar_filename
-            channel_entry.save()
-            logger.info(f'channel created: {self.channel_name}')
+        channel_entry = super().insert_info_into_db()
 
         new_playlist = channel_entry.playlist_set.create(
             playlist_id=self.playlist_id,
