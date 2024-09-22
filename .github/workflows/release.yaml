@@ -6,30 +6,30 @@ on:
       - v[0-9]+.[0-9]+.[0-9]+*
 
 jobs:
-  # github_publish:
-  #   runs-on: ubuntu-latest
-  #   # strategy:
-  #   #   max-parallel: 4
-  #   #   matrix:
-  #   #     python-version: [3.7, 3.8, 3.9]
-  #   permissions:
-  #     contents: write
-  #   steps:
-  #     - uses: actions/checkout@v4
+  github_publish:
+    runs-on: ubuntu-latest
+    # strategy:
+    #   max-parallel: 4
+    #   matrix:
+    #     python-version: [3.7, 3.8, 3.9]
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - name: list
-  #       run: ls
+      - name: list
+        run: ls
 
-  #     - name: Build Changelog
-  #       id: github_release
-  #       uses: mikepenz/release-changelog-builder-action@v5
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  #     - name: Create Release
-  #       uses: softprops/action-gh-release@v2
-  #       with:
-  #         body: ${{steps.github_release.outputs.changelog}}
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body: ${{steps.github_release.outputs.changelog}}
 
   dockerhub_publish:
     name: Push Docker image to Docker Hub
