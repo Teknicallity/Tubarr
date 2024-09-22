@@ -50,6 +50,9 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: teknicallity/tubarr
+          tags: |
+            type=semver,pattern={{version}}
+            latest
 
       - name: env meta output tags
         env:
