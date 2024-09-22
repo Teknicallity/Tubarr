@@ -60,15 +60,11 @@ jobs:
       - name: env meta output tags
         env:
           TAGS: ${{ steps.meta.outputs.tags }}
+        run: echo "$TAGS"
           
       - name: env meta output labels
         env:
           LABELS: ${{ steps.meta.outputs.labels }}
-
-      - name: echo tag
-        run: echo "$TAGS"
-
-      - name: echo label
         run: echo "$LABELS"
 
       # - name: Build and push Docker image
