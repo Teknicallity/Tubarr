@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -17,4 +17,6 @@ urlpatterns = [
 
     path("add/", views.add, name="add"),
     path("add/download/", views.download, name="download"),
+
+    path('api/', include('videomanager.api.urls'), name='api'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

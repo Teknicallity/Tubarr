@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_huey',
+    'rest_framework',
     # 'django_cleanup.apps.CleanupConfig',
 ]
 
@@ -194,4 +195,9 @@ DJANGO_HUEY = {
             },
         },
     }
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'drf_link_header_pagination.LinkHeaderPagination',
+    'PAGE_SIZE': 10
 }

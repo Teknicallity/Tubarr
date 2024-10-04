@@ -22,6 +22,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', RedirectView.as_view(pattern_name='videomanager:index')),
-    path('channels/', include('videomanager.urls')),
+    # path('', RedirectView.as_view(pattern_name='videomanager:index')),
+    # path('channels/', include('videomanager.urls')),
+    path('', include('videomanager.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
