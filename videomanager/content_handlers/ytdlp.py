@@ -22,12 +22,16 @@ class Ydl:
     @staticmethod
     @lru_cache(maxsize=10)
     def get_yt_info(url: str) -> dict:
+        os.makedirs(os.path.join(settings.CONFIG_DIR, 'ytdlp'), exist_ok=True)
         options = {
             'restrictfilenames': True,
             'forceprint': True,
             'format': 'best',
             'quiet': True,
         }
+        cookie_filepath = os.path.join(settings.CONFIG_DIR, 'ytdlp', 'cookies.txt')
+        if os.path.isfile(cookie_filepath):
+            options['cookiefile'] = cookie_filepath
         return yt_dlp.YoutubeDL(options).extract_info(url, download=False)
 
     @staticmethod
@@ -85,6 +89,9 @@ class Ydl:
             'download_archive': os.path.join(settings.CONFIG_DIR, 'ytdlp', 'downloaded.txt'),
             # 'writethumbnail': True,  # writes to the given paths home directory, not thumbnails directory
         }
+        cookie_filepath = os.path.join(settings.CONFIG_DIR, 'ytdlp', 'cookies.txt')
+        if os.path.isfile(cookie_filepath):
+            options['cookiefile'] = cookie_filepath
         if not ydl_opts.track_with_ytdlp_archive:
             del options['download_archive']
 
