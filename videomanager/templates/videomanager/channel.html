@@ -1,10 +1,21 @@
 {% extends "videomanager/base.html" %}
+{% load static %}
 
-{% block stylesheets %}{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'videomanager/stylesheets/carousel.css' %}">
+    <link rel="stylesheet" href="{% static 'videomanager/stylesheets/full-video-entry.css' %}">
+{% endblock %}
 
 {% block maincontent %}
 
     <p>Recent Videos:</p>
+    <div id="video-carousel" class="carousel">
+        <div class="carousel-track" id="carousel-inner">
+            <!-- Video items will be dynamically inserted here -->
+        </div>
+        <button class="carousel-control-prev" id="prev-btn">Previous</button>
+        <button class="carousel-control-next" id="next-btn">Next</button>
+    </div>
     {% if video_list %}
         <ul>
             {% for video in video_list %}
@@ -46,4 +57,5 @@
         </label>
     </form>
 
+    <script src="{% static 'videomanager/javascript/channel.js' %}"></script>
 {% endblock %}

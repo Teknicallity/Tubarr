@@ -1,0 +1,31 @@
+.carousel {
+    position: relative;
+    width: 90%;
+    margin: auto;
+}
+
+.carousel-track {
+    display: flex;
+    overflow: hidden;
+    justify-content: left;
+    gap: 1em;
+    width: 100%;
+}
+
+.carousel-item {
+    max-width: 200px;
+    min-width: 100%; /* Display one item at a time */
+    transition: transform 0.4s ease;
+}
+.item-title{
+    text-align: left;
+    text-wrap: wrap;
+    max-width: inherit;
+    margin: 0.2em 0;
+}
+
+.carousel-item img {
+    width: 150px; /* Fixed width */
+    height: 100px; /* Fixed height */
+    object-fit: cover; /* Cover ensures the image fills the dimensions without distortion */
+}
