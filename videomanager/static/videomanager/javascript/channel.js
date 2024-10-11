@@ -4,44 +4,31 @@ const nextBtn = document.getElementById('next-btn');
 
 let videos = [];
 let currentIndex = 0;
-let nextPage = 1;
 let pagesRemaining = true;
 const displayAmount = 4;
 const nextPattern = /(?<=<)(\S*)(?=>; rel="Next")/i;
-let url = "/api/videos/?page=1"
+let nextPageUrl = "/api/videos/?page=1"
 
 async function fetchVideos() {
-    if (url === "") {
+    if (nextPageUrl === "") {
         return
     }
-    const response = await fetch(`${url}`); // Adjust the API endpoint as needed
-    // nextPage++;
+    const response = await fetch(`${nextPageUrl}`);
     let nextVideos = await response.json();
-    console.log(nextVideos)
     videos.push(...nextVideos);
 
     const linkHeader = response.headers.get('link');
-    console.log(linkHeader)
     pagesRemaining = linkHeader && linkHeader.includes(`rel=\"next\"`);
 
     if (pagesRemaining) {
-        url = linkHeader.match(nextPattern)[0];
+        nextPageUrl = linkHeader.match(nextPattern)[0];
     } else {
-        url = ""
+        nextPageUrl = ""
     }
-    console.log(`url '${url}'`)
-    console.log(videos)
-    // renderCarousel();
 }
 
 function renderCarousel() {
-    // <div class="carousel-item">
-    //     <img src="${video.thumbnail}" alt="${video.title}">
-    //     <h3 class="item-title">${video.title}</h3>
-    //     <p>Uploaded on: ${video.upload_date}</p>
-    // </div>
     let maxEntryIndex = Math.min(currentIndex + displayAmount, videos.length);
-    console.log("maxEntry index", maxEntryIndex);
     carouselInner.innerHTML = videos.slice(currentIndex, maxEntryIndex).map(video => `
         <div class="video-entry">
                 <a href="/c=${video.channel.channel_id}/v=${video.video_id}/" class="entry-link">
@@ -63,7 +50,22 @@ function renderCarousel() {
                 </a>
             </div>
     `).join('');
-    // updateCarousel();
+}
+
+function updateButtons(){
+    const disabledColor = 'darkgray'
+    const enabledColor = 'black'
+    if (currentIndex + displayAmount >= videos.length) {
+        nextBtn.style.color = disabledColor;
+    } else {
+        nextBtn.style.color = enabledColor;
+    }
+
+    if (currentIndex - displayAmount < 0) {
+        prevBtn.style.color = disabledColor;
+    } else {
+        prevBtn.style.color = enabledColor;
+    }
 }
 
 function updateCarousel() {
@@ -74,33 +76,27 @@ function updateCarousel() {
 }
 
 prevBtn.addEventListener('click', () => {
-    console.log("currentIndex", currentIndex);
     currentIndex = (currentIndex - displayAmount >= 0) ? currentIndex - displayAmount : currentIndex;
-    console.log("updated currentIndex", currentIndex);
     renderCarousel();
+    updateButtons();
 });
 
 nextBtn.addEventListener('click', () => {
-    console.log("currentIndex", currentIndex);
     currentIndex = (currentIndex + displayAmount < videos.length) ? currentIndex + displayAmount : currentIndex;
-    console.log("updated currentIndex", currentIndex);
-    // updateCarousel();
 
     if (currentIndex + displayAmount >= videos.length) {
         fetchVideos().then(() => {
             renderCarousel();
+            updateButtons();
         })
     } else {
         renderCarousel();
+        updateButtons();
     }
 });
 
 // Initial fetch
 fetchVideos().then(() => {
     renderCarousel();
+    updateButtons()
 })
-// render
-// on next button click,
-//     change window
-//     check if end+windowsize is out of range
-//         fetchvideos
