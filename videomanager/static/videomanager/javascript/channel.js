@@ -5,25 +5,31 @@ const nextBtn = document.getElementById('next-btn');
 let videos = [];
 let currentIndex = 0;
 let pagesRemaining = true;
-const displayAmount = 4;
+const displayAmount = 6;
 const nextPattern = /(?<=<)(\S*)(?=>; rel="Next")/i;
 let nextPageUrl = "/api/videos/?page=1"
 
 async function fetchVideos() {
-    if (nextPageUrl === "") {
-        return
-    }
-    const response = await fetch(`${nextPageUrl}`);
-    let nextVideos = await response.json();
-    videos.push(...nextVideos);
+    try {
+        if (nextPageUrl === "") {
+            return
+        }
+        const response = await fetch(`${nextPageUrl}`);
+        if (!response.ok) throw new Error('Network error');
+        let nextVideos = await response.json();
+        videos.push(...nextVideos);
 
-    const linkHeader = response.headers.get('link');
-    pagesRemaining = linkHeader && linkHeader.includes(`rel=\"next\"`);
+        const linkHeader = response.headers.get('link');
+        pagesRemaining = linkHeader && linkHeader.includes(`rel=\"next\"`);
 
-    if (pagesRemaining) {
-        nextPageUrl = linkHeader.match(nextPattern)[0];
-    } else {
-        nextPageUrl = ""
+        if (pagesRemaining) {
+            nextPageUrl = linkHeader.match(nextPattern)[0];
+        } else {
+            nextPageUrl = ""
+        }
+    } catch (error) {
+        console.error('Error fetching videos:', error);
+        carouselInner.innerHTML = `<p class="error-message">Failed to load videos. Please try again later.</p>`;
     }
 }
 
@@ -52,6 +58,14 @@ function renderCarousel() {
     `).join('');
 }
 
+function debounce(func, delay) {
+    let timeout;
+    return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func(...args), delay);
+    };
+}
+
 function updateButtons(){
     const disabledColor = 'darkgray'
     const enabledColor = 'black'
@@ -68,11 +82,8 @@ function updateButtons(){
     }
 }
 
-function updateCarousel() {
-    const items = document.querySelectorAll('.carousel-item');
-    items.forEach((item, index) => {
-        item.style.transform = `translateX(${(index - currentIndex) * 100}%)`;
-    });
+function showLoading() {
+    carouselInner.innerHTML = `<div class="spinner">Loading...</div>`;
 }
 
 prevBtn.addEventListener('click', () => {
@@ -85,6 +96,7 @@ nextBtn.addEventListener('click', () => {
     currentIndex = (currentIndex + displayAmount < videos.length) ? currentIndex + displayAmount : currentIndex;
 
     if (currentIndex + displayAmount >= videos.length) {
+        showLoading();
         fetchVideos().then(() => {
             renderCarousel();
             updateButtons();
@@ -95,7 +107,17 @@ nextBtn.addEventListener('click', () => {
     }
 });
 
+let windowWidth = window.innerWidth;
+window.addEventListener('resize', debounce(() => {
+    window.addEventListener('resize', function () {
+       if (window.innerWidth !== windowWidth) {
+           console.log(windowWidth)
+       }
+    });
+}, 300))
+
 // Initial fetch
+showLoading();
 fetchVideos().then(() => {
     renderCarousel();
     updateButtons()
