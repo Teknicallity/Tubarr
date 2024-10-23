@@ -1,31 +1,99 @@
+* {
+    box-sizing: border-box;
+}
+
 .carousel {
     position: relative;
+}
+
+.carousel-viewport {
     width: 90%;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
     margin: auto;
 }
 
-.carousel-track {
-    display: flex;
-    overflow: hidden;
-    justify-content: left;
-    gap: 1em;
-    width: 100%;
-}
-
 .carousel-item {
-    max-width: 200px;
-    min-width: 100%; /* Display one item at a time */
-    transition: transform 0.4s ease;
-}
-.item-title{
-    text-align: left;
-    text-wrap: wrap;
-    max-width: inherit;
-    margin: 0.2em 0;
+    width: 300px;
 }
 
-.carousel-item img {
-    width: 150px; /* Fixed width */
-    height: 100px; /* Fixed height */
-    object-fit: cover; /* Cover ensures the image fills the dimensions without distortion */
+@media (max-width: 2200px) {
+    .carousel-viewport {
+        width: 1880px;
+    }
+
+    .carousel-item {
+        width: 300px;
+    }
+}
+
+@media (max-width: 1900px) {
+    .carousel-viewport {
+        width: 1570px;
+    }
+
+    .carousel-item {
+        width: 300px;
+    }
+}
+
+@media (max-width: 1600px) {
+    .carousel-viewport {
+        width: 1320px;
+    }
+
+    .carousel-item {
+        width: 250px;
+    }
+}
+
+@media (max-width: 1330px) {
+    .carousel-viewport {
+        width: 1050px;
+    }
+
+    .carousel-item {
+        width: 250px;
+    }
+}
+
+@media (max-width: 1100px) {
+    .carousel-viewport {
+        width: 850px;
+    }
+
+    .carousel-item {
+        width: 200px;
+    }
+}
+
+@media (max-width: 980px) {
+    .carousel-viewport {
+        width: 640px;
+    }
+
+    .carousel-item {
+        width: 200px;
+    }
+}
+
+/*@media (max-width: 510px) {*/
+/*    .carousel-viewport {*/
+/*        width: 250px;*/
+/*    }*/
+
+/*    .carousel-item {*/
+/*        width: 200px;*/
+/*    }*/
+/*}*/
+
+.carousel .carousel-track {
+    display: flex;
+    position: absolute;
+    overflow: hidden;
+    transition: 0.3s ease-in-out;
+    gap: 1em;
 }

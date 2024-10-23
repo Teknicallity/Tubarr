@@ -1,6 +1,6 @@
-const carouselInner = document.getElementById('carousel-inner');
-const prevBtn = document.getElementById('prev-btn');
-const nextBtn = document.getElementById('next-btn');
+const carouselInner = document.getElementById('video-carousel-inner');
+const prevBtn = document.getElementById('prev-video-btn');
+const nextBtn = document.getElementById('next-video-btn');
 
 let videos = [];
 let currentIndex = 0;
@@ -36,25 +36,21 @@ async function fetchVideos() {
 function renderCarousel() {
     let maxEntryIndex = Math.min(currentIndex + displayAmount, videos.length);
     carouselInner.innerHTML = videos.slice(currentIndex, maxEntryIndex).map(video => `
-        <div class="video-entry">
-                <a href="/c=${video.channel.channel_id}/v=${video.video_id}/" class="entry-link">
-                    <div class="thumbnail-container">
-                        <img class="thumbnail" src="${video.thumbnail}" alt="video thumbnail">
-                    </div>
-                    <div class="entry-text">
-                        <p class="entry-title">${video.title}</p>
-                        <div class="entry-metadata">
-                            <div class="channel-avatar">
-                                <img src="${video.channel.profile_image}" alt="pfp" class="avatar">
-                            </div>
-                            <div class="metadata-text">
-                                <p href="youtube.com" class="entry-channel">${video.channel.name}</p>
-                                <p class="entry-date">${video.upload_date}</p>
-                            </div>
+        <article class="video-entry carousel-item">
+            <a href="/c=${video.channel.channel_id}/v=${video.video_id}/" class="entry-link">
+                <div class="entry-content">
+                    <img class="thumbnail" src="${video.thumbnail}" alt="video thumbnail">
+                    <p class="entry-title">${video.title}</p>
+                    <div class="entry-metadata">
+                        <img src="${video.channel.profile_image}" alt="pfp" class="avatar">
+                        <div class="metadata-text">
+                            <p href="youtube.com" class="entry-channel">${video.channel.name}</p>
+                            <p class="entry-date">${video.upload_date}</p>
                         </div>
                     </div>
-                </a>
-            </div>
+                </div>
+            </a>
+        </article>
     `).join('');
 }
 
