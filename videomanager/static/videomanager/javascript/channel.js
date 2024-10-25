@@ -2,6 +2,12 @@ const carouselInner = document.getElementById('video-carousel-inner');
 const prevBtn = document.getElementById('prev-video-btn');
 const nextBtn = document.getElementById('next-video-btn');
 
+let carouselVp = document.querySelector(".carousel-viewport");
+let cCarouselInner = document.querySelector(".carousel-track");
+let carouselInnerWidth = cCarouselInner.getBoundingClientRect().width;
+let carouselItem = document.querySelector(".carousel-item");
+let leftValue = 0;
+
 let videos = [];
 let currentIndex = 0;
 let pagesRemaining = true;
@@ -27,15 +33,16 @@ async function fetchVideos() {
         } else {
             nextPageUrl = ""
         }
+        return nextVideos;
     } catch (error) {
         console.error('Error fetching videos:', error);
         carouselInner.innerHTML = `<p class="error-message">Failed to load videos. Please try again later.</p>`;
+        return null
     }
 }
 
-function renderCarousel() {
-    let maxEntryIndex = Math.min(currentIndex + displayAmount, videos.length);
-    carouselInner.innerHTML = videos.slice(currentIndex, maxEntryIndex).map(video => `
+function renderCarousel(newVideos) {
+    let newVidHtml = newVideos.map(video => `
         <article class="video-entry carousel-item">
             <a href="/c=${video.channel.channel_id}/v=${video.video_id}/" class="entry-link">
                 <div class="entry-content">
@@ -52,6 +59,12 @@ function renderCarousel() {
             </a>
         </article>
     `).join('');
+
+    if (carouselInner.innerHTML !== '') {
+        carouselInner.innerHTML = carouselInner.innerHTML + newVidHtml
+    } else {
+        carouselInner.innerHTML = newVidHtml
+    }
 }
 
 function debounce(func, delay) {
@@ -62,7 +75,7 @@ function debounce(func, delay) {
     };
 }
 
-function updateButtons(){
+function updateButtons() {
     const disabledColor = 'darkgray'
     const enabledColor = 'black'
     if (currentIndex + displayAmount >= videos.length) {
@@ -82,39 +95,91 @@ function showLoading() {
     carouselInner.innerHTML = `<div class="spinner">Loading...</div>`;
 }
 
-prevBtn.addEventListener('click', () => {
-    currentIndex = (currentIndex - displayAmount >= 0) ? currentIndex - displayAmount : currentIndex;
-    renderCarousel();
-    updateButtons();
-});
-
-nextBtn.addEventListener('click', () => {
-    currentIndex = (currentIndex + displayAmount < videos.length) ? currentIndex + displayAmount : currentIndex;
-
-    if (currentIndex + displayAmount >= videos.length) {
-        showLoading();
-        fetchVideos().then(() => {
-            renderCarousel();
-            updateButtons();
-        })
-    } else {
-        renderCarousel();
-        updateButtons();
-    }
-});
-
 let windowWidth = window.innerWidth;
 window.addEventListener('resize', debounce(() => {
     window.addEventListener('resize', function () {
-       if (window.innerWidth !== windowWidth) {
-           console.log(windowWidth)
-       }
+        if (window.innerWidth !== windowWidth) {
+            console.log(windowWidth)
+        }
     });
 }, 300))
 
 // Initial fetch
-showLoading();
-fetchVideos().then(() => {
-    renderCarousel();
+// showLoading();
+fetchVideos().then(newVideos => {
+    renderCarousel(newVideos);
     updateButtons()
+    carouselInnerWidth = cCarouselInner.getBoundingClientRect().width;
 })
+
+function getTotalMovementSize() {
+    let cardWidth = parseFloat(document.querySelector(".carousel-item").getBoundingClientRect().width)
+    let gap = parseFloat(window.getComputedStyle(cCarouselInner).getPropertyValue("gap"))
+    let carouselVpWidth = parseInt(window.getComputedStyle(carouselVp).getPropertyValue('width'))
+    let numberCardsInView = Math.floor(carouselVpWidth / cardWidth)
+    return (cardWidth + gap) * numberCardsInView
+}
+
+prevBtn.addEventListener("click", () => {
+    currentIndex = (currentIndex - displayAmount >= 0) ? currentIndex - displayAmount : currentIndex;
+    if (!leftValue == 0) {
+        leftValue -= -getTotalMovementSize();
+        cCarouselInner.style.left = leftValue + "px";
+    }
+    updateButtons()
+});
+
+nextBtn.addEventListener("click", () => {
+    currentIndex = (currentIndex + displayAmount < videos.length) ? currentIndex + displayAmount : currentIndex;
+    const carouselVpWidth = carouselVp.getBoundingClientRect().width;
+    if (carouselInnerWidth - Math.abs(leftValue) > carouselVpWidth) {
+        leftValue -= getTotalMovementSize();
+        cCarouselInner.style.left = leftValue + "px";
+    }
+    if (currentIndex + displayAmount >= videos.length) {
+        // showLoading();
+        fetchVideos().then(newVideos => {
+            if (newVideos) {
+                renderCarousel(newVideos);
+                updateButtons();
+                carouselInnerWidth = cCarouselInner.getBoundingClientRect().width;
+            }
+        })
+    } else {
+        updateButtons();
+    }
+});
+
+const mediaQuery980 = window.matchMedia("(max-width: 980px)");
+const mediaQuery1100 = window.matchMedia("(max-width: 1100px)");
+const mediaQuery1330 = window.matchMedia("(max-width: 1330px)");
+const mediaQuery1600 = window.matchMedia("(max-width: 1600px)");
+const mediaQuery1900 = window.matchMedia("(max-width: 1900px)");
+const mediaQuery2200 = window.matchMedia("(max-width: 2200px)");
+
+mediaQuery980.addEventListener("change", mediaManagement);
+mediaQuery1100.addEventListener("change", mediaManagement);
+mediaQuery1330.addEventListener("change", mediaManagement);
+mediaQuery1600.addEventListener("change", mediaManagement);
+mediaQuery1900.addEventListener("change", mediaManagement);
+mediaQuery2200.addEventListener("change", mediaManagement);
+
+let oldViewportWidth = window.innerWidth;
+
+function mediaManagement() {
+    const totalMovementSize = getTotalMovementSize();
+    const newViewportWidth = window.innerWidth;
+
+    if (leftValue <= -totalMovementSize && oldViewportWidth < newViewportWidth) {
+        leftValue += totalMovementSize;
+        cCarouselInner.style.left = leftValue + "px";
+        oldViewportWidth = newViewportWidth;
+    } else if (
+        leftValue <= -totalMovementSize &&
+        oldViewportWidth > newViewportWidth
+    ) {
+        leftValue -= totalMovementSize;
+        cCarouselInner.style.left = leftValue + "px";
+        oldViewportWidth = newViewportWidth;
+    }
+}
