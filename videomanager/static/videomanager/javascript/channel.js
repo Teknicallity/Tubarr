@@ -7,6 +7,7 @@ let cCarouselInner = document.querySelector(".carousel-track");
 let carouselInnerWidth = cCarouselInner.getBoundingClientRect().width;
 let carouselItem = document.querySelector(".carousel-item");
 let leftValue = 0;
+cCarouselInner.style.left = leftValue + "px";
 
 let videos = [];
 let currentIndex = 0;
@@ -42,7 +43,7 @@ async function fetchVideos() {
 }
 
 function renderCarousel(newVideos) {
-    let newVidHtml = newVideos.map(video => `
+    let newVidHtml = newVideos.map(video => carouselInner.innerHTML += `
         <article class="video-entry carousel-item">
             <a href="/c=${video.channel.channel_id}/v=${video.video_id}/" class="entry-link">
                 <div class="entry-content">
@@ -58,13 +59,7 @@ function renderCarousel(newVideos) {
                 </div>
             </a>
         </article>
-    `).join('');
-
-    if (carouselInner.innerHTML !== '') {
-        carouselInner.innerHTML = carouselInner.innerHTML + newVidHtml
-    } else {
-        carouselInner.innerHTML = newVidHtml
-    }
+    `)
 }
 
 function debounce(func, delay) {
@@ -122,8 +117,12 @@ function getTotalMovementSize() {
 
 prevBtn.addEventListener("click", () => {
     currentIndex = (currentIndex - displayAmount >= 0) ? currentIndex - displayAmount : currentIndex;
-    if (!leftValue == 0) {
+    if (!(leftValue === 0)) {
         leftValue -= -getTotalMovementSize();
+        cCarouselInner.style.left = leftValue + "px";
+    }
+    if (leftValue > 0){
+        leftValue = 0;
         cCarouselInner.style.left = leftValue + "px";
     }
     updateButtons()
@@ -132,8 +131,14 @@ prevBtn.addEventListener("click", () => {
 nextBtn.addEventListener("click", () => {
     currentIndex = (currentIndex + displayAmount < videos.length) ? currentIndex + displayAmount : currentIndex;
     const carouselVpWidth = carouselVp.getBoundingClientRect().width;
+    console.log('carouselInnerWidth', carouselInnerWidth)
+    console.log('carouselVpWidth', carouselVpWidth)
+    console.log('calulation', carouselInnerWidth, '-', leftValue, '>', carouselVpWidth)
+    console.log('res', carouselInnerWidth - Math.abs(leftValue), '>', carouselVpWidth)
     if (carouselInnerWidth - Math.abs(leftValue) > carouselVpWidth) {
+        console.log('before', leftValue);
         leftValue -= getTotalMovementSize();
+        console.log('after', leftValue);
         cCarouselInner.style.left = leftValue + "px";
     }
     if (currentIndex + displayAmount >= videos.length) {
@@ -145,23 +150,26 @@ nextBtn.addEventListener("click", () => {
                 carouselInnerWidth = cCarouselInner.getBoundingClientRect().width;
             }
         })
-    } else {
-        updateButtons();
     }
+    updateButtons();
 });
 
+const mediaQuery500 = window.matchMedia("(max-width: 500px)");
+const mediaQuery750 = window.matchMedia("(max-width: 750px)");
 const mediaQuery980 = window.matchMedia("(max-width: 980px)");
-const mediaQuery1100 = window.matchMedia("(max-width: 1100px)");
-const mediaQuery1330 = window.matchMedia("(max-width: 1330px)");
-const mediaQuery1600 = window.matchMedia("(max-width: 1600px)");
-const mediaQuery1900 = window.matchMedia("(max-width: 1900px)");
+const mediaQuery1150 = window.matchMedia("(max-width: 1150px)");
+const mediaQuery1430 = window.matchMedia("(max-width: 1430px)");
+const mediaQuery1700 = window.matchMedia("(max-width: 1700px)");
+const mediaQuery2000 = window.matchMedia("(max-width: 2000px)");
 const mediaQuery2200 = window.matchMedia("(max-width: 2200px)");
 
+mediaQuery500.addEventListener("change", mediaManagement);
+mediaQuery750.addEventListener("change", mediaManagement);
 mediaQuery980.addEventListener("change", mediaManagement);
-mediaQuery1100.addEventListener("change", mediaManagement);
-mediaQuery1330.addEventListener("change", mediaManagement);
-mediaQuery1600.addEventListener("change", mediaManagement);
-mediaQuery1900.addEventListener("change", mediaManagement);
+mediaQuery1150.addEventListener("change", mediaManagement);
+mediaQuery1430.addEventListener("change", mediaManagement);
+mediaQuery1700.addEventListener("change", mediaManagement);
+mediaQuery2000.addEventListener("change", mediaManagement);
 mediaQuery2200.addEventListener("change", mediaManagement);
 
 let oldViewportWidth = window.innerWidth;
