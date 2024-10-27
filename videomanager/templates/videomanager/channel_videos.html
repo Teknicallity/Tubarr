@@ -1,1 +1,15 @@
+{% extends "videomanager/channel.html" %}
+{% load static %}
 
+{% block inner_stylesheet %}
+{% endblock %}
+
+{% block inner_content %}
+
+    <script>
+        const tabs = document.querySelectorAll(".tab")
+        tabs.forEach(tab => tab.classList.remove('active'))
+        const activeTab = document.querySelector("#videos_tab")
+        activeTab.classList.add("active")
+    </script>
+{% endblock %}

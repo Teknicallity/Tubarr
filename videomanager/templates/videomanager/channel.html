@@ -17,6 +17,13 @@
             <h1 class="channel-name">{{ channel.name }}</h1>
         </div>
     </div>
+    <div class="tab-row">
+        <div class="tabs">
+            <a class="tab" id="home-tab" href="/c={{ channel.channel_id }}/"><div>Home</div></a>
+            <a class="tab" id="videos-tab" href="/c={{ channel.channel_id }}/videos/"><div>Videos</div></a>
+            <a class="tab" id="playlists-tab" href="/c={{ channel.channel_id }}/playlists/"><div>Playlists</div></a>
+        </div>
+    </div>
 
     {% block inner_content %}
     {% endblock %}
