@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block inner_stylesheet %}
-    <link rel="stylesheet" href="{% static 'videomanager/stylesheets/channel_list.css' %}">
     <link rel="stylesheet" href="{% static 'videomanager/stylesheets/full-video-entry.css' %}">
 {% endblock %}
 
@@ -28,9 +27,6 @@
     </div>
 
     <script>
-        const tabs = document.querySelectorAll(".tab")
-        tabs.forEach(tab => tab.classList.remove('active'))
-        const activeTab = document.querySelector("#videos-tab")
-        activeTab.classList.add("active")
+        let activeTabId = "#videos-tab"
     </script>
 {% endblock %}
