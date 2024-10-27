@@ -198,6 +198,7 @@ DJANGO_HUEY = {
 }
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'drf_link_header_pagination.LinkHeaderPagination',
+    # 'DEFAULT_PAGINATION_CLASS': 'drf_link_header_pagination.LinkHeaderPagination',
+    'DEFAULT_PAGINATION_CLASS': 'Tubarr.pagination.CustomPagination',
     'PAGE_SIZE': 10
 }
