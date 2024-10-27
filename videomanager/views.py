@@ -33,6 +33,15 @@ def channel(request, channel_id):
         "videomanager/channel_home.html",
         {"channel": c, "video_list": video_list, "playlist_list": playlist_list}
     )
+def channel_videos(request, channel_id):
+    c = get_object_or_404(Channel, channel_id=channel_id)
+    c_id = c.channel_id
+    video_list = list(Video.objects.filter(channel__channel_id=c_id, status=Video.STATUS.DOWNLOADED))
+    return render(
+        request,
+        "videomanager/channel_videos.html",
+        {"channel": c, "video_list": video_list}
+    )
 
 
 def playlist(request, channel_id, playlist_id):

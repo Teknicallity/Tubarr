@@ -8,6 +8,7 @@ app_name = "videomanager"
 urlpatterns = [
     path("", views.index, name="index"),
     path("c=<str:channel_id>/", views.channel, name="channel"),
+    path("c=<str:channel_id>/videos/", views.channel_videos, name="channel_videos"),
     path("c=<str:channel_id>/v=<str:video_id>/", views.video, name="video"),
     path("c=<str:channel_id>/p=<str:playlist_id>/", views.playlist, name="playlist"),
 

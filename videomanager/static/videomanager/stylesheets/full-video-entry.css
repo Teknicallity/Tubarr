@@ -1,6 +1,4 @@
-*{
-    box-sizing: border-box;
-}
+
 body{
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
@@ -9,7 +7,10 @@ body{
 p{
     margin: 0;
 }
-
+.content-grid{
+    gap: 1em;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1.5fr));
+}
 .video-entry{
     background-color: lightgray;
     border-radius: 5px;
