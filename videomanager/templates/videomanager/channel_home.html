@@ -52,9 +52,6 @@
 
     <script src="{% static 'videomanager/javascript/channel.js' %}"></script>
     <script>
-        const tabs = document.querySelectorAll(".tab")
-        tabs.forEach(tab => tab.classList.remove('active'))
-        const activeTab = document.querySelector("#home-tab")
-        activeTab.classList.add("active")
+        let activeTabId = "#home-tab"
     </script>
 {% endblock %}

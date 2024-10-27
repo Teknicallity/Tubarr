@@ -52,6 +52,7 @@
     display: grid;
     background-color: #bfbfbf;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .tab div {
@@ -63,4 +64,8 @@
 .tab.active, .tab.active div {
     color: black;
     background-color: #8f8f8f;
+}
+
+#inner-content{
+    margin: 1rem;
 }

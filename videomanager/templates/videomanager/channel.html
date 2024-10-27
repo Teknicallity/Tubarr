@@ -17,14 +17,22 @@
     </div>
     <div class="tab-row">
         <div class="tabs">
-            <a class="tab" id="home-tab" href="/c={{ channel.channel_id }}/"><div>Home</div></a>
-            <a class="tab" id="videos-tab" href="/c={{ channel.channel_id }}/videos/"><div>Videos</div></a>
-            <a class="tab" id="playlists-tab" href="/c={{ channel.channel_id }}/playlists/"><div>Playlists</div></a>
+            <a class="tab" id="home-tab" href="/c={{ channel.channel_id }}/">
+                <div>Home</div>
+            </a>
+            <a class="tab" id="videos-tab" href="/c={{ channel.channel_id }}/videos/">
+                <div>Videos</div>
+            </a>
+            <a class="tab" id="playlists-tab">
+                <div>Playlists</div>
+            </a>
         </div>
     </div>
 
-    {% block inner_content %}
-    {% endblock %}
+    <div id="inner-content">
+        {% block inner_content %}
+        {% endblock %}
+    </div>
 
     <form id="delete_form" action="{{ request.path }}delete/">
         {% csrf_token %}
@@ -32,4 +40,14 @@
             <button type="submit">Delete</button>
         </label>
     </form>
+    <script src="{% static 'videomanager/javascript/channel_tab_switcher.js' %}"></script>
+    <script>
+        const channelId = "{{ channel.channel_id }}"
+        const channelName = "{{ channel.name }}"
+        const tabs = document.querySelectorAll(".tab")
+        tabs.forEach(tab => tab.classList.remove('active'))
+        const activeTab = document.querySelector("#home-tab")
+        activeTab.classList.add("active")
+        {#activeTab.click()#}
+    </script>
 {% endblock %}

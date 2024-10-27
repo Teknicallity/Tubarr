@@ -14,6 +14,7 @@ class ChannelSerializer(serializers.ModelSerializer):
 
 class PlaylistSerializer(serializers.ModelSerializer):
     channel = ChannelSerializer()
+    thumbnail = serializers.SerializerMethodField()
 
     class Meta:
         model = Playlist
@@ -21,7 +22,13 @@ class PlaylistSerializer(serializers.ModelSerializer):
             'playlist_id',
             'name',
             'channel',
+            'thumbnail',
         ]
+
+    @staticmethod
+    def get_thumbnail(obj: Playlist):
+        first_video = obj.videos.first()
+        return first_video.thumbnail.url if first_video else None
 
 
 class VideoSerializer(serializers.ModelSerializer):

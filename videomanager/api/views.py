@@ -30,10 +30,10 @@ class ChannelEntry(generics.RetrieveAPIView):
 
 class PlaylistList(generics.ListAPIView):
     queryset = Playlist.objects.all().order_by('name')
-    serializer_class = VideoSerializer
+    serializer_class = PlaylistSerializer
 
 
-class PlaylistListForChannel(APIView):
+class PlaylistListForChannel(generics.ListAPIView):
     serializer_class = PlaylistSerializer
 
     def get_queryset(self):

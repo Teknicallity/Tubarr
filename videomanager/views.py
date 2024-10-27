@@ -33,6 +33,8 @@ def channel(request, channel_id):
         "videomanager/channel_home.html",
         {"channel": c, "video_list": video_list, "playlist_list": playlist_list}
     )
+
+
 def channel_videos(request, channel_id):
     c = get_object_or_404(Channel, channel_id=channel_id)
     c_id = c.channel_id
@@ -41,6 +43,17 @@ def channel_videos(request, channel_id):
         request,
         "videomanager/channel_videos.html",
         {"channel": c, "video_list": video_list}
+    )
+
+
+def channel_playlists(request, channel_id):
+    c = get_object_or_404(Channel, channel_id=channel_id)
+    c_id = c.channel_id
+    playlist_list = list(Playlist.objects.filter(channel__channel_id=c_id))
+    return render(
+        request,
+        "videomanager/channel_playlists.html",
+        {"channel": c, "playlist_list": playlist_list}
     )
 
 

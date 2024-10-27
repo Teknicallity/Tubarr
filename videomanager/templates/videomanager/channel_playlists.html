@@ -2,14 +2,12 @@
 {% load static %}
 
 {% block inner_stylesheet %}
+    <link rel="stylesheet" href="{% static 'videomanager/stylesheets/full-video-entry.css' %}">
 {% endblock %}
 
 {% block inner_content %}
 
     <script>
-        const tabs = document.querySelectorAll(".tab")
-        tabs.forEach(tab => tab.classList.remove('active'))
-        const activeTab = document.querySelector("#playlists-tab")
-        activeTab.classList.add("active")
+        let activeTabId = "#playlists-tab"
     </script>
 {% endblock %}
