@@ -30,8 +30,8 @@ def channel(request, channel_id):
 
     return render(
         request,
-        "videomanager/channel.html",
-        {"video_list": video_list, "playlist_list": playlist_list}
+        "videomanager/channel_home.html",
+        {"channel": c, "video_list": video_list, "playlist_list": playlist_list}
     )
 
 
