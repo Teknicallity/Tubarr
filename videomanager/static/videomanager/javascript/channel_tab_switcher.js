@@ -9,17 +9,49 @@ home_tab.addEventListener("click", () => {
     window.history.pushState("", `${channelName} Home`, `/c=${channelId}`)
 })
 videos_tab.addEventListener("click", () => {
-    window.history.pushState("", `${channelName} Videos`, `/c=${channelId}/videos/`)
+    history.pushState("", `${channelName} Videos`, `/c=${channelId}/videos/`)
+    inner_content.innerHTML = `<p>Loading</p>`
+    let initialUrl = `/api/channels/${channelId}/videos/?page_size=${gridDisplayAmount}`
+
+    fetchPage(initialUrl).then(videoList => {
+        if (videoList.length === 0) {
+            inner_content.innerHTML = `<p>No Videos</p>`
+            return
+        }
+
+        let gridContent = ""
+        videoList.forEach(video => {
+            gridContent += `
+            <article class="video-entry">
+                <a href="/c=${video.channel.channel_id}/p=${video.playlist_id}/" class="entry-link">
+                    <div class="entry-content">
+                        <img class="thumbnail" src="${video.thumbnail}" alt="playlist thumbnail">
+                        <p class="entry-title">${video.name}</p>
+                        <div class="entry-metadata">
+                            <img src="${video.channel.profile_image}" alt="pfp" class="avatar">
+                            <div class="metadata-text">
+                                <p href="youtube.com" class="entry-channel">${video.channel.name}</p>
+                                <p class="entry-date">${video.upload_date}</p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </article>
+            `
+        })
+        inner_content.innerHTML = `
+        <div class="content-grid">
+            ${gridContent}
+        </div>
+        `
+
+    })
 })
 playlists_tab.addEventListener("click", () => {
-    console.log('playlist tab click')
     history.pushState("", `${channelName} Playlists`, `/c=${channelId}/playlists/`)
-    console.log('loading')
     inner_content.innerHTML = `<p>Loading</p>`
     let initialUrl = `/api/channels/${channelId}/playlists/?page_size=${gridDisplayAmount}`
-    console.log('fetching')
-    //get x link content
-    //load content into screen
+
     fetchPage(initialUrl).then(playlistList => {
         if (playlistList.length === 0) {
             inner_content.innerHTML = `<p>No Playlists</p>`

@@ -6,25 +6,6 @@
 {% endblock %}
 
 {% block inner_content %}
-    <div class="content-grid">
-        {% for video in video_list %}
-            <article class="video-entry">
-                <a href="/c={{ video.channel.channel_id }}/v={{ video.video_id }}/" class="entry-link">
-                    <div class="entry-content">
-                        <img class="thumbnail" src="{{ video.thumbnail.url }}" alt="video thumbnail">
-                        <p class="entry-title">{{ video.title }}</p>
-                        <div class="entry-metadata">
-                            <img src="{{ video.channel.profile_image.url }}" alt="pfp" class="avatar">
-                            <div class="metadata-text">
-                                <p href="youtube.com" class="entry-channel">{{ video.channel.name }}</p>
-                                <p class="entry-date">{{ video.upload_date }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </article>
-        {% endfor %}
-    </div>
 
     <script>
         let activeTabId = "#videos-tab"
