@@ -40,15 +40,12 @@
             <button type="submit">Delete</button>
         </label>
     </form>
-    <script src="{% static 'videomanager/javascript/channel.js' %}"></script>
+    <script src="{% static 'videomanager/javascript/channel.js' %}" type="module"></script>
     <script src="{% static 'videomanager/javascript/channel_tab_switcher.js' %}" type="module"></script>
     <script>
         const channelId = "{{ channel.channel_id }}"
         const channelName = "{{ channel.name }}"
-        const tabs = document.querySelectorAll(".tab")
-        tabs.forEach(tab => tab.classList.remove('active'))
-        const activeTab = document.querySelector(`${activeTabId}`)
-        activeTab.classList.add("active")
+        let activeTab = document.getElementById(`${activeTabId}`)
         activeTab.click()
     </script>
 {% endblock %}
