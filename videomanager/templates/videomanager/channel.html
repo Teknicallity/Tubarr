@@ -45,7 +45,9 @@
     <script>
         const channelId = "{{ channel.channel_id }}"
         const channelName = "{{ channel.name }}"
-        let activeTab = document.getElementById(`${activeTabId}`)
-        activeTab.click()
+        document.addEventListener("DOMContentLoaded", () => {
+            let activeTab = document.querySelector(`${activeTabId}`)
+            activeTab.click()
+        })
     </script>
 {% endblock %}
