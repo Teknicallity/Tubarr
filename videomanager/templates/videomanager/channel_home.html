@@ -7,50 +7,7 @@
 {% endblock %}
 
 {% block inner_content %}
-    <p>Recent Videos:</p>
-    <div id="video-carousel" class="carousel">
-        <div class="carousel-viewport">
-            <div class="carousel-track" id="video-carousel-inner"></div>
-        </div>
-{#        move these buttons into viewport#}
-        <button class="carousel-control-prev" id="prev-video-btn">Previous</button>
-        <button class="carousel-control-next" id="next-video-btn">Next</button>
-    </div>
-    {% if video_list %}
-        <ul>
-            {% for video in video_list %}
-                {#            <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li> og#}
-                {#            <li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li> modified#}
-                {#            with namespacing #}
-                <li>
-                    <a href="{% url 'videomanager:video' video.channel.channel_id video.video_id %}">
-                        {{ video.title }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No videos available</p>
-    {% endif %}
-    <p>Recent Playlists:</p>
-    {% if playlist_list %}
-        <ul>
-            {% for playlist in playlist_list %}
-                {#            <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li> og#}
-                {#            <li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li> modified#}
-                {#            with namespacing #}
-                <li>
-                    <a href="{% url 'videomanager:playlist' playlist.channel.channel_id playlist.playlist_id %}">
-                        {{ playlist.name }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No playlists available</p>
-    {% endif %}
 
-    <script src="{% static 'videomanager/javascript/channel.js' %}"></script>
     <script>
         let activeTabId = "#home-tab"
     </script>

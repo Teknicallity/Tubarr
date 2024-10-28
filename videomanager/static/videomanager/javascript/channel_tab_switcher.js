@@ -1,3 +1,5 @@
+import {initializeCarousel} from "./channel.js";
+
 const home_tab = document.querySelector("#home-tab")
 const videos_tab = document.querySelector("#videos-tab")
 const playlists_tab = document.querySelector("#playlists-tab")
@@ -6,7 +8,21 @@ const inner_content = document.querySelector("#inner-content")
 const gridDisplayAmount = 40
 
 home_tab.addEventListener("click", () => {
-    window.history.pushState("", `${channelName} Home`, `/c=${channelId}`)
+    history.pushState("", `${channelName} Home`, `/c=${channelId}`)
+    inner_content.innerHTML = `<p>Loading</p>`;
+    inner_content.innerHTML = `
+    <p>Recent Videos:</p>
+    <div id="video-carousel" class="carousel">
+        <div class="carousel-viewport">
+            <div class="carousel-track" id="video-carousel-inner"></div>
+        </div>
+        <button class="carousel-control-prev" id="prev-video-btn">Previous</button>
+        <button class="carousel-control-next" id="next-video-btn">Next</button>
+    </div>
+    <p>Recent Playlists:</p>
+    `;
+
+    initializeCarousel()
 })
 videos_tab.addEventListener("click", () => {
     history.pushState("", `${channelName} Videos`, `/c=${channelId}/videos/`)

@@ -17,7 +17,7 @@
     </div>
     <div class="tab-row">
         <div class="tabs">
-            <a class="tab" id="home-tab" href="/c={{ channel.channel_id }}/">
+            <a class="tab" id="home-tab">
                 <div>Home</div>
             </a>
             <a class="tab" id="videos-tab">
@@ -40,14 +40,15 @@
             <button type="submit">Delete</button>
         </label>
     </form>
-    <script src="{% static 'videomanager/javascript/channel_tab_switcher.js' %}"></script>
+    <script src="{% static 'videomanager/javascript/channel.js' %}"></script>
+    <script src="{% static 'videomanager/javascript/channel_tab_switcher.js' %}" type="module"></script>
     <script>
         const channelId = "{{ channel.channel_id }}"
         const channelName = "{{ channel.name }}"
         const tabs = document.querySelectorAll(".tab")
         tabs.forEach(tab => tab.classList.remove('active'))
-        const activeTab = document.querySelector("#home-tab")
+        const activeTab = document.querySelector(`${activeTabId}`)
         activeTab.classList.add("active")
-        {#activeTab.click()#}
+        activeTab.click()
     </script>
 {% endblock %}
