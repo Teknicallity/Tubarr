@@ -45,7 +45,7 @@ videos_tab.addEventListener("click", () => {
                 <a href="/c=${video.channel.channel_id}/p=${video.playlist_id}/" class="entry-link">
                     <div class="entry-content">
                         <img class="thumbnail" src="${video.thumbnail}" alt="playlist thumbnail">
-                        <p class="entry-title">${video.name}</p>
+                        <p class="entry-title">${video.title}</p>
                         <div class="entry-metadata">
                             <img src="${video.channel.profile_image}" alt="pfp" class="avatar">
                             <div class="metadata-text">
