@@ -1,0 +1,71 @@
+{% extends "videomanager/base.html" %}
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'videomanager/stylesheets/channel_list.css' %}">
+    <link rel="stylesheet" href="{% static 'videomanager/stylesheets/full-video-entry.css' %}">
+    <link rel="stylesheet" href="{% static 'videomanager/stylesheets/search.css' %}">
+{% endblock %}
+
+{% block maincontent %}
+    <div class="main-content">
+        <div class="search-grid">
+            {% if results.videos %}
+                <div class="content-column content-grid" id="videos-column">
+                    {% for video in results.videos %}
+                        <article class="video-entry">
+                            <a href="/c={{ video.channel.channel_id }}/p={{ video.playlist_id }}/" class="entry-link">
+                                <div class="entry-content">
+                                    <img class="thumbnail" src="{{ video.thumbnail }}" alt="playlist thumbnail">
+                                    <p class="entry-title">{{ video.title }}</p>
+                                    <div class="entry-metadata">
+                                        <img src="{{ video.channel.profile_image }}" alt="pfp" class="avatar">
+                                        <div class="metadata-text">
+                                            <p href="youtube.com" class="entry-channel">{{ video.channel.name }}</p>
+                                            <p class="entry-date">{{ video.upload_date }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% if results.playlists %}
+                <div class="content-column content-grid" id="playlists-column">
+                    {% for playlist in results.playlists %}
+                        <article class="video-entry">
+                            <a href="/c={{ playlist.channel.channel_id }}/p={{ playlist.playlist_id }}/"
+                               class="entry-link">
+                                <div class="entry-content">
+                                    <img class="thumbnail" src="{{ playlist.thumbnail }}" alt="playlist thumbnail">
+                                    <p class="entry-title">{{ playlist.name }}</p>
+                                    <div class="entry-metadata">
+                                        <img src="{{ playlist.channel.profile_image }}" alt="pfp" class="avatar">
+                                        <div class="metadata-text">
+                                            <p href="youtube.com" class="entry-channel">{{ playlist.channel.name }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% if results.channels %}
+                <div class="content-column channel-grid" id="channels-column">
+                    {% for channel in results.channels %}
+                        <div class="channel-card">
+                            <a href="{% url 'videomanager:channel' channel.channel_id %}" class="channel-link">
+                                <div class="channel-icon-container">
+                                    <img class="channel-icon" src="{{ channel.profile_image.url }}" alt="channel icon">
+                                </div>
+                                <p class="channel-title">{{ channel.name }}</p>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

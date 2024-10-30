@@ -1,14 +1,13 @@
-import json
 import logging
 
 from django.conf import settings
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-from django.views.generic.edit import DeleteView
 
 from videomanager.content_handlers.content_factory import ContentFactory, UnknownContentTypeError, UnknownUrlError
 from .models import Channel, Video, Playlist
+from .utils.search import search
 
 logger = logging.getLogger(__name__)
 
@@ -147,3 +146,27 @@ def delete_video(request, channel_id, video_id):
             v.channel.delete()
             return HttpResponseRedirect(reverse('videomanager:index'))
         return HttpResponseRedirect(reverse('videomanager:channel', args=(v.channel.channel_id,)))
+
+
+def search_view(request):
+    DEFAULT_AMOUNT = 10
+    MAX_AMOUNT = 100
+    DEFAULT_TYPE = 'all'
+    ALLOWED_TYPES = {'all', 'videos', 'playlists', 'channels'}
+
+    search_query = request.GET.get('q') or request.GET.get('query')
+    search_size = min(MAX_AMOUNT, int(request.GET.get('size', DEFAULT_AMOUNT)))
+    search_type = request.GET.get('type', DEFAULT_TYPE)
+
+    # if search_type not in ALLOWED_TYPES:
+    #     return Response(
+    #         {'error': f'Invalid search type: {search_type}. Allowed values are {", ".join(ALLOWED_TYPES)}.'},
+    #         status=status.HTTP_400_BAD_REQUEST
+    #     )
+
+    results = search(search_query, search_size, search_type)
+    return render(
+        request,
+        'videomanager/search.html',
+        {'results': results}
+    )

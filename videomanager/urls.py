@@ -20,5 +20,7 @@ urlpatterns = [
     path("add/", views.add, name="add"),
     path("add/download/", views.download, name="download"),
 
+    path("search/", views.search_view, name="search"),
+
     path('api/', include('videomanager.api.urls'), name='api'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
