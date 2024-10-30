@@ -4,15 +4,13 @@ import logging
 from django.conf import settings
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
-from django.urls import reverse
-from django.views.generic.edit import DeleteView
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from videomanager.content_handlers.content_factory import ContentFactory, UnknownContentTypeError, UnknownUrlError
 from videomanager.models import Channel, Video, Playlist
 from .serializers import VideoSerializer, PlaylistSerializer, ChannelSerializer
+from ..utils.search import search
 
 logger = logging.getLogger(__name__)
 
@@ -71,3 +69,26 @@ class VideoEntry(generics.RetrieveAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
     lookup_field = 'video_id'
+
+
+class SearchApiView(APIView):
+    DEFAULT_AMOUNT = 3
+    MAX_AMOUNT = 100
+    DEFAULT_TYPE = 'all'
+    ALLOWED_TYPES = {'all', 'videos', 'playlists', 'channels'}
+
+    def get(self, request):
+        search_query = request.GET.get('q') or request.GET.get('query')
+        search_size = min(self.MAX_AMOUNT, int(request.GET.get('size', self.DEFAULT_AMOUNT)))
+        search_type = request.GET.get('type', self.DEFAULT_TYPE)
+
+        if search_type not in self.ALLOWED_TYPES:
+            return Response(
+                {'error': f'Invalid search type: {search_type}. Allowed values are {", ".join(self.ALLOWED_TYPES)}.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        results = search(search_query=search_query, amount=search_size, search_type=search_type)
+        return Response(data=results, status=status.HTTP_200_OK)
+
+

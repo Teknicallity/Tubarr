@@ -11,4 +11,5 @@ urlpatterns = [
     path('playlists/<str:playlist_id>', views.PlaylistEntry.as_view(), name='playlist_entry'),
     path('videos/', views.VideoList.as_view(), name='video_list'),
     path('videos/<str:video_id>', views.VideoEntry.as_view(), name='video_entry'),
+    path('search/', views.SearchApiView.as_view(), name='search'),
 ]
