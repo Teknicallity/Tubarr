@@ -15,7 +15,12 @@
         <a href="{% url 'videomanager:index' %}" class="home-link">Tubarr</a>
     </div>
     <div class="center-header">
-        <input type="text" placeholder="Search All" class="text-input">
+        <form action="/search/" method="get">
+            <label>
+                <input type="text" name="q" placeholder="Search All" class="text-input">
+            </label>
+            <input type="submit">
+        </form>
     </div>
     <div class="right-header">
         {#        <form action="" method="POST">#}
