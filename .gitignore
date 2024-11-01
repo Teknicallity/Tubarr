@@ -1,4 +1,6 @@
-.idea
+/.idea
+/.venv
+/venv
 /media/*
 /config/tubarr.db
 /config/tasks.db
