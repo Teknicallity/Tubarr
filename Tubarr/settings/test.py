@@ -7,7 +7,7 @@ DJANGO_HUEY = {
         'download': {  # this name will be used in decorators below
             'huey_class': 'huey.SqliteHuey',
             'filename': DATABASES['tasks']['NAME'],
-            'immediate': False,
+            'immediate': True,
             'results': False,
             'store_none': False,
             'consumer': {

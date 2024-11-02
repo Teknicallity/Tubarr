@@ -1,3 +1,4 @@
+import os.path
 from datetime import datetime
 from django.utils.timezone import get_current_timezone
 from django.test import TestCase
@@ -28,5 +29,5 @@ class VideoTestCase(TestCase):
             status=Video.STATUS.DOWNLOADED,
         )
         video.save()
-        local_file_path = f'{video.channel.channel_id}/{video.filename}'
+        local_file_path = os.path.join(video.channel.channel_id, video.filename)
         self.assertEqual(video.file.name, local_file_path)
