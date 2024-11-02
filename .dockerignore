@@ -1,9 +1,13 @@
 *
 
 !/Tubarr
+/Tubarr/settings/dev.py
+/Tubarr/settings/test.py
 !/videomanager
 !/LICENSE
 !/manage.py
 !/requirements.txt
 !/start.sh
 !/supervisord.conf
+!/tubarr_nginx.conf
+!/uwsgi.ini

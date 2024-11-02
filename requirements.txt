@@ -1,6 +1,6 @@
 asgiref==3.7.2
 Brotli==1.1.0
-certifi==2024.2.2
+certifi==2024.7.4
 charset-normalizer==3.3.2
 Django==5.0.7
 django-huey==1.2.0
@@ -12,10 +12,10 @@ mutagen==1.47.0
 pillow==10.3.0
 pycryptodomex==3.20.0
 requests==2.32.3
-sqlparse==0.4.4
+sqlparse==0.5.0
 supervisor==4.2.5
 tzdata==2024.1
-urllib3==2.2.1
+urllib3==2.2.2
 uWSGI==2.0.28
 websockets==13.0
 yt-dlp==2024.10.22
