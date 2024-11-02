@@ -14,7 +14,8 @@ COPY requirements.txt requirements.txt
 RUN mkdir /etc/tubarr/.venv && \
     python -m venv --upgrade-deps --copies /etc/tubarr/.venv && \
     /etc/tubarr/.venv/bin/pip install --upgrade pip wheel && \
-    /etc/tubarr/.venv/bin/pip install -r requirements.txt
+    /etc/tubarr/.venv/bin/pip install -r requirements.txt && \
+    /etc/tubarr/.venv/bin/pip install 'uWSGI>=2.0.28'
 
 #RUN pip3 install --no-cache-dir -r requirements.txt
 
