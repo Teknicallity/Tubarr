@@ -5,8 +5,7 @@ DJANGO_HUEY = {
     'default': 'download',  # this name must match with any of the queues defined below.
     'queues': {
         'download': {  # this name will be used in decorators below
-            'huey_class': 'huey.SqliteHuey',
-            'filename': DATABASES['tasks']['NAME'],
+            'huey_class': 'huey.MemoryHuey',
             'immediate': True,
             'results': False,
             'store_none': False,
