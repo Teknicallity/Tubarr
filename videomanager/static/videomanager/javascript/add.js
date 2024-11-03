@@ -39,7 +39,7 @@ document.querySelector('#content_input_form').addEventListener('submit', (event)
     const urlDisplay = document.getElementById('input_url_display')
     urlDisplay.innerText = `${url}`
 
-    content_info.innerHTML = ''
+    content_info.innerHTML = `<div class="spinner"></div>`
 
     fetch('', {
         method: 'POST',
