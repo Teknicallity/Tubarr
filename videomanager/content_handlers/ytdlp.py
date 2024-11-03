@@ -6,7 +6,8 @@ import os
 import shutil
 import yt_dlp
 from django.conf import settings
-from django_huey import task
+import django_huey
+from huey import signals
 
 from videomanager.content_handlers.ytdlp_logger import YtDlpLogger
 from videomanager.content_handlers.ytdlp_options import YdlDownloadOptions
@@ -75,7 +76,7 @@ class Ydl:
         return os.path.join(channel_id, "thumbnails", f"{output_basename}.{extension}")
 
     @staticmethod
-    @task()
+    @django_huey.task()
     def download(url: str, ydl_opts: YdlDownloadOptions):
         os.makedirs(os.path.join(settings.CONFIG_DIR, 'ytdlp'), exist_ok=True)
         options = {
@@ -96,6 +97,18 @@ class Ydl:
             del options['download_archive']
 
         yt_dlp.YoutubeDL(options).download(url)
+
+    @staticmethod
+    @django_huey.signal(signals.SIGNAL_EXECUTING)
+    def print_executing(signal, task):
+        logger.info('SCHEDULED: %s - %s' % (signal, task.id))  # SCHEDULED: executing - fdc8829d-d52f-4cb1-8307-af2f1666e0dc
+
+    @staticmethod
+    @django_huey.signal(signals.SIGNAL_ERROR, signals.SIGNAL_CANCELED)
+    def print_executing(signal, task, exc=None):
+        logger.warning('ERROR: %s - %s' % (signal, task.id))
+        if exc:
+            logger.warning(exc)
 
 
 def _get_channel_pictures_url(channel_id: str) -> (str, str):
