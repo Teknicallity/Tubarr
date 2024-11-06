@@ -3,7 +3,8 @@ name: Release
 on:
   push:
     tags:
-      - v[0-9]+.[0-9]+.[0-9]+*
+      - 'v[0-9]+.[0-9]+.[0-9]+*'         # Release tags
+      - 'pre-v[0-9]+.[0-9]+.[0-9]+*'     # Pre-release tags
 
 jobs:
   github_publish:
@@ -29,7 +30,9 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          body: ${{steps.github_release.outputs.changelog}}
+          body: ${{ steps.github_release.outputs.changelog }}
+          tag_name: ${{ github.ref }}  # Use the actual tag name
+          prerelease: ${{ startsWith(github.ref, 'refs/tags/pre-') }}  # Mark as prerelease if tag starts with pre-
 
   dockerhub_publish:
     name: Push Docker image to Docker Hub
@@ -50,13 +53,15 @@ jobs:
           images: teknicallity/tubarr
           tags: |
             type=semver,pattern={{version}}
-            latest
+            type=semver,pattern={{version}},latest,when=not startsWith(github.ref, 'refs/tags/pre-')
+          # Include normal version tags
+          # Mark latest only for non-pre-release
 
       - name: env meta output tags
         env:
           TAGS: ${{ steps.meta.outputs.tags }}
         run: echo "$TAGS"
-          
+
       - name: env meta output labels
         env:
           LABELS: ${{ steps.meta.outputs.labels }}
