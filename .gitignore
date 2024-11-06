@@ -1,3 +1,13 @@
+/.idea
+/.venv
+/venv
 /media/*
 /config/tubarr.db
+/config/tasks.db
 /config/ytdlp/downloaded.txt
+/config/ytdlp/*
+/config/tasks.db-shm
+/config/tasks.db-wal
+/config/to_delete.txt
+
+__pycache__/

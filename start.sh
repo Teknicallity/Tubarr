@@ -2,7 +2,11 @@
 
 TB_SERVER_PORT="${TB_SERVER_PORT:-3020}"
 
-mkdir -p media
+mkdir -p /etc/tubarr/media
+mkdir -p /etc/tubarr/config
+chown -R www-data: /etc/tubarr/config
+
+chown www-data: /etc/tubarr
 
 #python manage.py generate_secret_key
 
@@ -10,4 +14,4 @@ mkdir -p media
 
 python3 manage.py migrate
 
-python3 manage.py runserver "0.0.0.0:${TB_SERVER_PORT}"
+exec uwsgi --http :"$TB_SERVER_PORT" --ini uwsgi.ini
