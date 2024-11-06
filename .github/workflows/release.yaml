@@ -4,7 +4,7 @@ on:
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+*'         # Release tags
-      - 'pre-v[0-9]+.[0-9]+.[0-9]+*'     # Pre-release tags
+      - 'v[0-9]+.[0-9]+.[0-9]+-pre*'     # Pre-release tags
 
 jobs:
   github_publish:
@@ -31,8 +31,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           body: ${{ steps.github_release.outputs.changelog }}
-          tag_name: ${{ github.ref }}  # Use the actual tag name
-          prerelease: ${{ startsWith(github.ref, 'refs/tags/pre-') }}  # Mark as prerelease if tag starts with pre-
+          tag_name: ${{ github.ref_name }}  # Use the actual tag name
+          prerelease: ${{ contains(github.ref_name, '-pre') }}  # Mark as prerelease if tag contains '-pre'
 
   dockerhub_publish:
     name: Push Docker image to Docker Hub
@@ -53,9 +53,17 @@ jobs:
           images: teknicallity/tubarr
           tags: |
             type=semver,pattern={{version}}
-            type=semver,pattern={{version}},latest,when=not startsWith(github.ref, 'refs/tags/pre-')
-          # Include normal version tags
-          # Mark latest only for non-pre-release
+          labels: |
+            org.opencontainers.image.description=$GITHUB_REPOSITORY
+
+      - name: Set pre-release environment variable
+        id: set_prerelease
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == *"-pre"* ]]; then
+            echo "PRE_RELEASE=true" >> $GITHUB_ENV
+          else
+            echo "PRE_RELEASE=false" >> $GITHUB_ENV
+          fi
 
       - name: env meta output tags
         env:
@@ -73,15 +81,21 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push Docker image
+      - name: Build and push Docker image without latest tag for pre-releases
         id: push
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: teknicallity/tubarr:${{ github.ref_name }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Tag as latest (only for non-pre-release)
+        if: env.PRE_RELEASE == 'false'
+        run: |
+          docker tag teknicallity/tubarr:${{ github.ref_name }} teknicallity/tubarr:latest
+          docker push teknicallity/tubarr:latest
 
       - name: Docker Hub Description
         uses: peter-evans/dockerhub-description@v4
