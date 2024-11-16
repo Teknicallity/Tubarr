@@ -100,7 +100,7 @@ def add(request):
             request.session['url'] = url
         return JsonResponse({"url": url, "initial_info": attribute_dictionary, "error": err})
 
-    return render(request, 'videomanager/add.html')
+    return render(request, 'videomanager/add.html', {'DEMO_MODE': settings.DEMO_MODE})
 
 
 def download(request):
