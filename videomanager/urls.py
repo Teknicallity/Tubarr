@@ -7,6 +7,7 @@ from . import views
 app_name = "videomanager"
 urlpatterns = [
     path("", views.index, name="index"),
+    path("videos/", views.all_videos, name="all_videos"),
     path("c=<str:channel_id>/", views.channel, name="channel"),
     path("c=<str:channel_id>/videos/", views.channel_videos, name="channel_videos"),
     path("c=<str:channel_id>/playlists/", views.channel_playlists, name="channel_playlists"),

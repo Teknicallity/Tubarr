@@ -11,8 +11,11 @@
   box-shadow: 2px 2px 5px gray;
 }
 
-.sidebar div {
-  padding: 8px;
-  font-size: 24px;
+.side-entry {
+  margin: 1rem 0;
+  padding: 0 0.5em;
+  font-size: 1.4rem;
   display: block;
+  color: white;
+  text-decoration: none;
 }

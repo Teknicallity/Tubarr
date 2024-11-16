@@ -45,6 +45,15 @@ def channel_videos(request, channel_id):
     )
 
 
+def all_videos(request):
+    v = list(Video.objects.all())
+    return render(
+        request,
+        "videomanager/all_videos.html",
+        {"video_list": v}
+    )
+
+
 def channel_playlists(request, channel_id):
     c = get_object_or_404(Channel, channel_id=channel_id)
     c_id = c.channel_id
