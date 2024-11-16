@@ -1,13 +1,15 @@
 import os
 from django.core.management.utils import get_random_secret_key
 
-from .base import BASE_DIR, DATABASES
+from .base import BASE_DIR, CONFIG_DIR
 
 try:
-    with open(os.path.join(BASE_DIR, "data", "secretkey.txt")) as f:  # TODO
+    with open(os.path.join(CONFIG_DIR, "secretkey.txt")) as f:
         SECRET_KEY = f.read().strip()
 except:
     SECRET_KEY = get_random_secret_key()
+    with open(os.path.join(CONFIG_DIR, "secretkey.txt"), 'w') as f:
+        f.write(SECRET_KEY)
 
 DEBUG = False
 
