@@ -12,4 +12,6 @@ urlpatterns = [
     path('videos/', views.VideoList.as_view(), name='video_list'),
     path('videos/<str:video_id>', views.VideoEntry.as_view(), name='video_entry'),
     path('search/', views.SearchApiView.as_view(), name='search'),
+    path('downloads/', views.DownloadingVideos.as_view(), name='queued_downloads'),
+    path('downloads/count/', views.DownloadingVideosCount.as_view(), name='queued_count'),
 ]

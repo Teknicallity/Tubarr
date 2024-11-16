@@ -179,3 +179,7 @@ def search_view(request):
         'videomanager/search.html',
         {'results': results}
     )
+
+
+def queued_list(request):
+    return render(request, 'test')

@@ -92,3 +92,32 @@ class SearchApiView(APIView):
         return Response(data=results, status=status.HTTP_200_OK)
 
 
+class DownloadingVideos(APIView):
+
+    @staticmethod
+    def get(request):
+        queued_videos_list = Video.objects.filter(status=Video.STATUS.QUEUED)
+        errored_videos_list = Video.objects.filter(status=Video.STATUS.ERRORED)
+
+        return Response(
+            data={
+                'queued_videos': VideoSerializer(queued_videos_list, many=True).data,
+                'errored_videos': VideoSerializer(errored_videos_list, many=True).data
+            },
+            status=status.HTTP_200_OK
+        )
+
+
+class DownloadingVideosCount(APIView):
+    @staticmethod
+    def get(request):
+        queued_videos_count = Video.objects.filter(status=Video.STATUS.QUEUED).count()
+        errored_videos_count = Video.objects.filter(status=Video.STATUS.ERRORED).count()
+
+        return Response(
+            data={
+                'queued_videos_count': queued_videos_count,
+                'errored_videos_count': errored_videos_count
+            },
+            status=status.HTTP_200_OK
+        )

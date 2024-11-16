@@ -35,13 +35,24 @@
     </div>
 </header>
 <div class="sidebar">
-    <div><a class="side-entry" href="/">Channels</a></div>
-    <div><a class="side-entry" href="{% url 'videomanager:all_videos' %}">All Videos</a></div>
+    <div class="side-links">
+        <div><a class="side-entry" href="/">Channels</a></div>
+        <div><a class="side-entry" href="{% url 'videomanager:all_videos' %}">All Videos</a></div>
+    </div>
+    <a href="{% url 'videomanager:queued_list' %}" class="queued-link">
+        <div class="side-status">
+            <div id="queued-url" style="display: none">{% url 'videomanager:queued_count' %}</div>
+            <div class="queued" id="queued-div"></div>
+            <div class="errored" id="errored-div"></div>
+        </div>
+    </a>
 </div>
 <div class="main-content-section">
     {% block maincontent %}
         <h2>Error: content cannot be loaded</h2>
     {% endblock %}
 </div>
+
+<script src="{% static 'videomanager/javascript/sidebar.js' %}"></script>
 </body>
 </html>

@@ -24,4 +24,6 @@ urlpatterns = [
     path("search/", views.search_view, name="search"),
 
     path('api/', include('videomanager.api.urls'), name='api'),
+
+    path('queued/', views.queued_list, name='queued_list'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
