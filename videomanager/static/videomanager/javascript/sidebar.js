@@ -14,13 +14,13 @@ function fetchData() {
         })
         .then(data => {
             if (data.queued_videos_count && data.queued_videos_count > 0) {
-                queuedDiv.textContent = `Queued: ${data.queued}`;
+                queuedDiv.textContent = `Queued: ${data.queued_videos_count}`;
             } else {
                 queuedDiv.textContent = '';
             }
 
             if (data.errored_videos_count && data.errored_videos_count > 0) {
-                erroredDiv.textContent = `Errored: ${data.errored}`;
+                erroredDiv.textContent = `Errored: ${data.errored_videos_count}`;
             } else {
                 erroredDiv.textContent = '';
             }

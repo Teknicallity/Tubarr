@@ -182,4 +182,12 @@ def search_view(request):
 
 
 def queued_list(request):
-    return render(request, 'test')
+    queued_videos = list(Video.objects.filter(status=Video.STATUS.QUEUED))
+    errored_videos = list(Video.objects.filter(status=Video.STATUS.ERRORED))
+    v = Video.objects.first()
+
+    return render(
+        request,
+        'videomanager/queued_list.html',
+        {'queued_videos': queued_videos, 'errored_videos': errored_videos}
+    )
