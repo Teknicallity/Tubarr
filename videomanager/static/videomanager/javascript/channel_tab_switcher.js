@@ -42,7 +42,7 @@ videos_tab.addEventListener("click", () => {
         videoList.forEach(video => {
             gridContent += `
             <article class="video-entry">
-                <a href="/c=${video.channel.channel_id}/p=${video.playlist_id}/" class="entry-link">
+                <a href="/c=${video.channel.channel_id}/v=${video.video_id}/" class="entry-link">
                     <div class="entry-content">
                         <img class="thumbnail" src="${video.thumbnail}" alt="playlist thumbnail">
                         <p class="entry-title">${video.title}</p>
