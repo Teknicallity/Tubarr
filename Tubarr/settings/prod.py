@@ -13,6 +13,8 @@ except:
 
 DEBUG = False
 
+DEMO_MODE = os.getenv('DEMO_MODE', False)
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

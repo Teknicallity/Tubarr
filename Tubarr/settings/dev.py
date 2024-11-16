@@ -4,6 +4,8 @@ from .base import BASE_DIR, DATABASES
 
 DEBUG = True
 
+DEMO_MODE = True
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
