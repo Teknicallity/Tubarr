@@ -119,6 +119,9 @@ def download(request):
 
 
 def delete_channel(request, channel_id):
+    if settings.DEMO_MODE:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
     c = get_object_or_404(Channel, channel_id=channel_id)
     if request.method == "GET":
         context = {'delete_url': reverse('videomanager:delete_channel', args=(c.channel_id,))}
@@ -130,6 +133,9 @@ def delete_channel(request, channel_id):
 
 
 def delete_playlist(request, channel_id, playlist_id):
+    if settings.DEMO_MODE:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
     p = get_object_or_404(Playlist, playlist_id=playlist_id)
     if request.method == "GET":
         context = {'delete_url': reverse('videomanager:delete_playlist', args=(p.channel.channel_id, p.playlist_id,))}
@@ -144,6 +150,9 @@ def delete_playlist(request, channel_id, playlist_id):
 
 
 def delete_video(request, channel_id, video_id):
+    if settings.DEMO_MODE:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
     v = get_object_or_404(Video, video_id=video_id)
     if request.method == "GET":
         context = {'delete_url': reverse('videomanager:delete_video', args=(v.channel.channel_id, v.video_id,))}
