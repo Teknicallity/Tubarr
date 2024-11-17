@@ -16,6 +16,12 @@
   padding: 0 0.5em 0.5em 0.5em;
 }
 
+@media (max-width: 810px) {
+  .sidebar {
+    display: none;
+  }
+}
+
 .side-entry {
   margin: 1rem 0;
   font-size: 1.4rem;

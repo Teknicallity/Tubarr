@@ -20,7 +20,7 @@
     width: 300px;
 }
 
-@media (max-width: 2200px) {
+@media (max-width: 2250px) {
     .carousel-viewport {
         width: 1880px;
     }
@@ -30,7 +30,7 @@
     }
 }
 
-@media (max-width: 2000px) {
+@media (max-width: 2060px) {
     .carousel-viewport {
         width: 1570px;
     }
@@ -40,7 +40,7 @@
     }
 }
 
-@media (max-width: 1700px) {
+@media (max-width: 1750px) {
     .carousel-viewport {
         width: 1320px;
     }
@@ -50,7 +50,7 @@
     }
 }
 
-@media (max-width: 1430px) {
+@media (max-width: 1500px) {
     .carousel-viewport {
         width: 1050px;
     }
@@ -60,7 +60,7 @@
     }
 }
 
-@media (max-width: 1150px) {
+@media (max-width: 1250px) {
     .carousel-viewport {
         width: 850px;
     }
@@ -70,7 +70,7 @@
     }
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1030px) {
     .carousel-viewport {
         width: 640px;
     }
@@ -80,7 +80,7 @@
     }
 }
 
-@media (max-width: 750px) {
+@media (max-width: 650px) {
     .carousel-viewport {
         width: 420px;
     }
@@ -89,7 +89,7 @@
         width: 200px;
     }
 }
-@media (max-width: 500px) {
+@media (max-width: 450px) {
     .carousel-viewport {
         width: 200px;
     }
