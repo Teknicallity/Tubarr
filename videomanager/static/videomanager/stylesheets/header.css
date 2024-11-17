@@ -26,6 +26,10 @@ header{
     font-weight: bold;
     font-size: 2rem;
 }
+.demo-text {
+    display: inline;
+    font-size: 1rem;
+}
 .home-link{
     color: azure;
     text-decoration: none;

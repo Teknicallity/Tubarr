@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 # call this view through urls
 def index(request):
     channel_list = Channel.objects.order_by("name")
-    context = {"channel_list": channel_list}
+    context = {'DEMO_MODE': settings.DEMO_MODE, "channel_list": channel_list}
     return render(request, "videomanager/channel_list.html", context)
 
 
@@ -30,7 +30,7 @@ def channel(request, channel_id):
     return render(
         request,
         "videomanager/channel_home.html",
-        {"channel": c, "video_list": video_list, "playlist_list": playlist_list}
+        {'DEMO_MODE': settings.DEMO_MODE, "channel": c, "video_list": video_list, "playlist_list": playlist_list}
     )
 
 
@@ -41,7 +41,7 @@ def channel_videos(request, channel_id):
     return render(
         request,
         "videomanager/channel_videos.html",
-        {"channel": c, "video_list": video_list}
+        {'DEMO_MODE': settings.DEMO_MODE, "channel": c, "video_list": video_list}
     )
 
 
@@ -50,7 +50,7 @@ def all_videos(request):
     return render(
         request,
         "videomanager/all_videos.html",
-        {"video_list": v}
+        {'DEMO_MODE': settings.DEMO_MODE, "video_list": v}
     )
 
 
@@ -61,7 +61,7 @@ def channel_playlists(request, channel_id):
     return render(
         request,
         "videomanager/channel_playlists.html",
-        {"channel": c, "playlist_list": playlist_list}
+        {'DEMO_MODE': settings.DEMO_MODE, "channel": c, "playlist_list": playlist_list}
     )
 
 
@@ -69,7 +69,7 @@ def playlist(request, channel_id, playlist_id):
     p = get_object_or_404(Playlist, playlist_id=playlist_id)
     video_list = list(Video.objects.filter(playlists__playlist_id=p.playlist_id))
     # return HttpResponse("Playlist: %s" % playlist_id)
-    return render(request, "videomanager/playlist.html", {"video_list": video_list})
+    return render(request, "videomanager/playlist.html", {'DEMO_MODE': settings.DEMO_MODE, "video_list": video_list})
 
 
 def video(request, channel_id, video_id):
@@ -79,7 +79,7 @@ def video(request, channel_id, video_id):
 
     url = 'content/' + v.channel.channel_id + '/' + v.filename
     logger.debug(f'Video location url: {url}')
-    return render(request, "videomanager/video.html", {"video": v, "video_url": url})
+    return render(request, "videomanager/video.html", {'DEMO_MODE': settings.DEMO_MODE, "video": v, "video_url": url})
 
 
 def add(request):
@@ -138,7 +138,10 @@ def delete_playlist(request, channel_id, playlist_id):
 
     p = get_object_or_404(Playlist, playlist_id=playlist_id)
     if request.method == "GET":
-        context = {'delete_url': reverse('videomanager:delete_playlist', args=(p.channel.channel_id, p.playlist_id,))}
+        context = {
+            'DEMO_MODE': settings.DEMO_MODE,
+            'delete_url': reverse('videomanager:delete_playlist', args=(p.channel.channel_id, p.playlist_id,))
+        }
         return render(request, 'videomanager/delete_redirect.html', context)
 
     if request.method == "POST":
@@ -155,7 +158,10 @@ def delete_video(request, channel_id, video_id):
 
     v = get_object_or_404(Video, video_id=video_id)
     if request.method == "GET":
-        context = {'delete_url': reverse('videomanager:delete_video', args=(v.channel.channel_id, v.video_id,))}
+        context = {
+            'DEMO_MODE': settings.DEMO_MODE,
+            'delete_url': reverse('videomanager:delete_video', args=(v.channel.channel_id, v.video_id,))
+        }
         return render(request, 'videomanager/delete_redirect.html', context)
 
     if request.method == "POST":
@@ -186,7 +192,7 @@ def search_view(request):
     return render(
         request,
         'videomanager/search.html',
-        {'results': results}
+        {'DEMO_MODE': settings.DEMO_MODE, 'results': results}
     )
 
 
@@ -198,5 +204,5 @@ def queued_list(request):
     return render(
         request,
         'videomanager/queued_list.html',
-        {'queued_videos': queued_videos, 'errored_videos': errored_videos}
+        {'DEMO_MODE': settings.DEMO_MODE, 'queued_videos': queued_videos, 'errored_videos': errored_videos}
     )

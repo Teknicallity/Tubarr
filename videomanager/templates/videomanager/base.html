@@ -17,6 +17,7 @@
 <header>
     <div class="left-header">
         <a href="{% url 'videomanager:index' %}" class="home-link">Tubarr</a>
+        {% if DEMO_MODE %}<p class="demo-text">(Demo Mode)</p>{% endif %}
     </div>
     <div class="center-header">
         <form action="/search/" method="get">
