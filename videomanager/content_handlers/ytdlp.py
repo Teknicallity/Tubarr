@@ -1,3 +1,4 @@
+import time
 from functools import lru_cache
 
 import logging
@@ -11,6 +12,7 @@ from huey import signals
 
 from videomanager.content_handlers.ytdlp_logger import YtDlpLogger
 from videomanager.content_handlers.ytdlp_options import YdlDownloadOptions
+from videomanager.models import Video
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +41,11 @@ class Ydl:
     def download_channel_picture(channel_id: str) -> (str, str):
         download_path = os.path.join(settings.MEDIA_ROOT, channel_id)
         os.makedirs(download_path, exist_ok=True)
+
+        if settings.DEMO_MODE:
+            _copy_demo_resources(download_path)
+            return 'avatar.jpg', 'banner.jpg'
+
         avatar_url, banner_url = _get_channel_pictures_url(channel_id)
         avatar_name = ''
         banner_name = ''
@@ -64,6 +71,16 @@ class Ydl:
         # https://stackoverflow.com/questions/49825421/download-file-using-python-without-knowing-its-extension-content-type-strea
         absolute_thumbnails_dir = os.path.join(settings.MEDIA_ROOT, channel_id, "thumbnails")
         os.makedirs(absolute_thumbnails_dir, exist_ok=True)
+
+        if settings.DEMO_MODE:
+            thumbnail_filepath = os.path.join(settings.MEDIA_ROOT, 'default.jpg')
+            if not os.path.isfile(thumbnail_filepath):
+                shutil.copyfile(
+                    os.path.join(settings.DEMO_DIR, 'thumbnail.jpg'),
+                    thumbnail_filepath
+                )
+
+            return thumbnail_filepath
 
         r = requests.get(thumbnail_url)
         extension = r.headers['content-type'].split('/')[-1]
@@ -96,6 +113,9 @@ class Ydl:
         if not ydl_opts.track_with_ytdlp_archive:
             del options['download_archive']
 
+        if settings.DEMO_MODE:
+            options['skip_download'] = True
+
         yt_dlp.YoutubeDL(options).download(url)
 
     @staticmethod
@@ -109,6 +129,19 @@ class Ydl:
         logger.warning('ERROR: %s - %s' % (signal, task.id))
         if exc:
             logger.warning(exc)
+
+    @staticmethod
+    @django_huey.task()
+    def demo_download(video_id: str, channel_id: str):
+        time.sleep(5)
+        shutil.copyfile(
+            os.path.join(settings.DEMO_DIR, '[Wtwyosdkx44] Doot Doot Mr Skeltal Original.mp4'),
+            os.path.join(settings.MEDIA_ROOT, channel_id, '[Wtwyosdkx44] Doot Doot Mr Skeltal Original.mp4')
+        )
+        v = Video.objects.get(video_id=video_id)
+        v.filename = '[Wtwyosdkx44] Doot Doot Mr Skeltal Original.mp4'
+        v.status = v.STATUS.DOWNLOADED
+        v.save()
 
 
 def _get_channel_pictures_url(channel_id: str) -> (str, str):
@@ -142,3 +175,19 @@ def _download_picture(url: str, filepath: str):
         logger.error(f"File not found error when saving picture to {filepath}: {e}")
     except Exception as e:
         logger.error(f"An unexpected error occurred: {e}")
+
+def _copy_demo_resources(download_path):
+    thumbnail_filepath = os.path.join(settings.MEDIA_ROOT, 'default.jpg')
+    if not os.path.isfile(thumbnail_filepath):
+        shutil.copyfile(
+            os.path.join(settings.DEMO_DIR, 'thumbnail.jpg'),
+            thumbnail_filepath
+        )
+    shutil.copyfile(
+        os.path.join(settings.DEMO_DIR, 'avatar.jpg'),
+        os.path.join(download_path, 'avatar.jpg')
+    )
+    shutil.copyfile(
+        os.path.join(settings.DEMO_DIR, 'banner.jpg'),
+        os.path.join(download_path, 'banner.jpg')
+    )

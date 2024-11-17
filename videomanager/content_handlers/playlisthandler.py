@@ -50,6 +50,9 @@ class PlaylistHandler(MediaContent):
     def download(self, track_with_ytdlp_archive: bool = True):
         self.insert_info_into_db()
 
+        if settings.DEMO_MODE:
+            return
+
         self.download_path = os.path.join(settings.MEDIA_ROOT, self.channel_id)
         options = YdlDownloadOptions(
             trigger_string=[': has already been recorded in the archive'],

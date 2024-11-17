@@ -115,6 +115,8 @@ CONFIG_DIR = BASE_DIR / 'config'
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = 'content/'
 
+DEMO_DIR = os.path.join(BASE_DIR, 'Tubarr', 'demo_resources')
+
 DJANGO_HUEY = {
     'default': 'download',  # this name must match with any of the queues defined below.
     'queues': {
