@@ -10,6 +10,12 @@
 {% block maincontent %}
     <div class="channel-decoration">
         <img class="banner-image" src="{{ channel.banner_image.url }}" alt="">
+        <form id="delete_form" action="{{ request.path }}delete/">
+            {% csrf_token %}
+            <label>
+                <button class="delete-button" type="submit">Delete Channel</button>
+            </label>
+        </form>
         <div class="channel-info">
             <img class="channel-pfp" src="{{ channel.profile_image.url }}" alt="">
             <h1 class="channel-name">{{ channel.name }}</h1>
@@ -34,12 +40,6 @@
         {% endblock %}
     </div>
 
-    <form id="delete_form" action="{{ request.path }}delete/">
-        {% csrf_token %}
-        <label>
-            <button type="submit">Delete</button>
-        </label>
-    </form>
     <script src="{% static 'videomanager/javascript/channel.js' %}" type="module"></script>
     <script src="{% static 'videomanager/javascript/channel_tab_switcher.js' %}" type="module"></script>
     <script>
