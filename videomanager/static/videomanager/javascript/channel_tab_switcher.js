@@ -15,16 +15,72 @@ home_tab.addEventListener("click", () => {
     inner_content.innerHTML = `
     <p>Recent Videos:</p>
     <div id="video-carousel" class="carousel">
-        <div class="carousel-viewport">
+        <div class="carousel-viewport" id="video-carousel-inner-viewport">
             <div class="carousel-track" id="video-carousel-inner"></div>
         </div>
-        <button class="carousel-control-prev" id="prev-video-btn">Previous</button>
-        <button class="carousel-control-next" id="next-video-btn">Next</button>
+        <div class="video-carousel-buttons">
+            <button class="carousel-control" id="prev-video-btn"><</button>
+            <button class="carousel-control" id="next-video-btn">></button>
+        </div>
     </div>
     <p>Recent Playlists:</p>
+    <div id="playlist-carousel" class="carousel">
+        <div class="carousel-viewport" id="playlist-carousel-inner-viewport">
+            <div class="carousel-track" id="playlist-carousel-inner"></div>
+        </div>
+        <div class="video-carousel-buttons">
+            <button class="carousel-control" id="prev-playlist-btn"><</button>
+            <button class="carousel-control" id="next-playlist-btn">></button>
+        </div>
+    </div>
     `;
 
-    initializeCarousel()
+    initializeCarousel({
+        containerId: 'video-carousel-inner',
+        prevButtonId: 'prev-video-btn',
+        nextButtonId: 'next-video-btn',
+        apiEndpoint: '/api/videos/?page=1',
+        renderItem: video => `
+        <article class="video-entry carousel-item">
+            <a href="/c=${video.channel.channel_id}/v=${video.video_id}/" class="entry-link">
+                <div class="entry-content">
+                    <img class="thumbnail" src="${video.thumbnail}" alt="video thumbnail">
+                    <p class="entry-title">${video.title}</p>
+                    <div class="entry-metadata">
+                        <img src="${video.channel.profile_image}" alt="pfp" class="avatar">
+                        <div class="metadata-text">
+                            <p href="youtube.com" class="entry-channel">${video.channel.name}</p>
+                            <p class="entry-date">${video.upload_date}</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </article>
+    `
+    });
+
+    initializeCarousel({
+        containerId: 'playlist-carousel-inner',
+        prevButtonId: 'prev-playlist-btn',
+        nextButtonId: 'next-playlist-btn',
+        apiEndpoint: '/api/playlists/?page=1',
+        renderItem: playlist => `
+        <article class="video-entry carousel-item">
+            <a href="/c=${playlist.channel.channel_id}/p=${playlist.playlist_id}/" class="entry-link">
+                <div class="entry-content">
+                    <img class="thumbnail" src="${playlist.thumbnail}" alt="playlist thumbnail">
+                    <p class="entry-title">${playlist.name}</p>
+                    <div class="entry-metadata">
+                        <img src="${playlist.channel.profile_image}" alt="pfp" class="avatar">
+                        <div class="metadata-text">
+                            <p href="youtube.com" class="entry-channel">${playlist.channel.name}</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </article>
+    `
+    });
 })
 videos_tab.addEventListener("click", () => {
     setActiveTab("#videos-tab")
@@ -150,4 +206,5 @@ function setActiveTab(tabId) {
     const activeTab = document.querySelector(`${tabId}`)
     activeTab.classList.add("active")
 }
+
 setActiveTab(activeTabId)
