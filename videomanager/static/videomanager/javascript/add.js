@@ -75,7 +75,6 @@ document.querySelector('#content_input_form').addEventListener('submit', (event)
                     <div id="playlist_info">
                         <img class="thumbnail" src=${info.thumbnail_url} alt="Thumbnail">
                         <h3 class="title">${info.playlist_name}</h3>
-                        <img class="profile-pic" src='' alt="Channel Picture">
                         <div class="info">
                             <p class="channel">${info.channel_name}</p>
                             <p class="video-count"># of videos: ${info.playlist_entry_count}</p>
