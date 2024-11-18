@@ -1,0 +1,110 @@
+[
+  {
+    "model": "videomanager.channel",
+    "pk": 1,
+    "fields": {
+      "channel_id": "testchannel1",
+      "name": "TestChannel 1",
+      "last_checked": "2024-06-18T13:37:42.785Z",
+      "monitored": false,
+      "profile_image": "testchannel1/avatar.jpg",
+      "banner_image": "testchannel1/banner.jpg"
+    }
+  },
+  {
+    "model": "videomanager.channel",
+    "pk": 2,
+    "fields": {
+      "channel_id": "testchannel2",
+      "name": "TestChannel 2",
+      "last_checked": "2024-06-23T01:20:24.800Z",
+      "monitored": false,
+      "profile_image": "testchannel2/avatar.jpg",
+      "banner_image": "testchannel2/banner.jpg"
+    }
+  },
+  {
+    "model": "videomanager.playlistsource",
+    "pk": 1,
+    "fields": {
+      "name": "youtube"
+    }
+  },
+  {
+    "model": "videomanager.playlist",
+    "pk": 1,
+    "fields": {
+      "playlist_id": "playlist1",
+      "channel": 2,
+      "name": "Playlist",
+      "last_checked": "2024-06-23T01:20:28.558Z",
+      "monitored": false,
+      "source": 1,
+      "videos": [
+        2,
+        3,
+        4
+      ]
+    }
+  },
+  {
+    "model": "videomanager.video",
+    "pk": 1,
+    "fields": {
+      "video_id": "testvideo1",
+      "channel": 1,
+      "title": "Video1",
+      "filename": "[testvideo1]-Video1.mp4",
+      "description": "Description 1",
+      "upload_date": "2024-06-11",
+      "last_checked": "2024-06-18T13:37:44.429Z",
+      "monitored": false,
+      "file": "testchannel1/[testvideo1]-Video1.mp4"
+    }
+  },
+  {
+    "model": "videomanager.video",
+    "pk": 2,
+    "fields": {
+      "video_id": "testvideo2",
+      "channel": 2,
+      "title": "Video2",
+      "filename": "[testvideo2]-Video2.mp4",
+      "description": "Description 2",
+      "upload_date": "2020-07-17",
+      "last_checked": "2024-06-23T01:20:28.574Z",
+      "monitored": false,
+      "file": "testchannel2/[testvideo2]-Video2.mp4"
+    }
+  },
+  {
+    "model": "videomanager.video",
+    "pk": 3,
+    "fields": {
+      "video_id": "testvideo3",
+      "channel": 2,
+      "title": "Video3",
+      "filename": "[testvideo3]-Video3.mp4",
+      "description": "Description 3",
+      "upload_date": "2020-07-22",
+      "last_checked": "2024-06-23T01:20:28.594Z",
+      "monitored": false,
+      "file": "testchannel2/[testvideo3]-Video3.mp4"
+    }
+  },
+  {
+    "model": "videomanager.video",
+    "pk": 4,
+    "fields": {
+      "video_id": "testvideo4",
+      "channel": 2,
+      "title": "Video4",
+      "filename": "[testvideo4]-Video4.mp4",
+      "description": "Description 4",
+      "upload_date": "2020-08-02",
+      "last_checked": "2024-06-23T01:20:28.613Z",
+      "monitored": false,
+      "file": "testchannel2/[testvideo4]-Video4.mp4"
+    }
+  }
+]

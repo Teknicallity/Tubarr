@@ -14,4 +14,8 @@ chown www-data: /etc/tubarr
 
 python3 manage.py migrate
 
+if [ "$DISABLE_BACKGROUND_TASKS" != "True" ]; then
+  supervisord -c supervisord.conf
+fi
+
 exec uwsgi --http :"$TB_SERVER_PORT" --ini uwsgi.ini

@@ -1,4 +1,3 @@
-#FROM debian:bookworm-slim
 FROM python:3.12.7-slim-bookworm AS tubarr
 LABEL authors="Teknicallity"
 
@@ -6,7 +5,7 @@ ENV PYTHONUNBUFFERED=1
 
 #ENTRYPOINT ["top", "-b"]
 
-RUN apt-get -y update && apt-get -y install build-essential libpcre3 libpcre3-dev
+RUN apt-get -y update && apt-get -y install build-essential
 
 WORKDIR /etc/tubarr
 

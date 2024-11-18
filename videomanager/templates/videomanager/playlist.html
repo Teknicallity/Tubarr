@@ -11,11 +11,20 @@
                 {#            <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li> og#}
                 {#            <li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li> modified#}
                 {#            with namespacing #}
-                <li><a href="{% url 'videomanager:channel' video.channel_id %}">{{ video.name }}</a></li>
+                <li>
+                    <a href="{% url 'videomanager:video' video.channel.channel_id video.video_id %}">{{ video.title }}</a>
+                </li>
             {% endfor %}
         </ul>
     {% else %}
         <p>No videos available</p>
     {% endif %}
+
+    <form id="delete_form" action="{{ request.path }}delete/">
+        {% csrf_token %}
+        <label>
+            <button type="submit">Delete</button>
+        </label>
+    </form>
 
 {% endblock %}

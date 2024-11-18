@@ -1,0 +1,67 @@
+{% extends "videomanager/base.html" %}
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'videomanager/stylesheets/horizontal-video-entry.css' %}">
+{% endblock %}
+
+{% block maincontent %}
+    {% if not queued_videos and not errored_videos %}<h2 id="no-queued">No Queued Downloads</h2>{% endif %}
+    <p id="updateUrl" style="display: none">{% url 'videomanager:queued_downloads' %}</p>
+    <div class="content-container">
+        <div class="horizontal-video-list" id="queued-videos" {% if not queued_videos %}style="display: none" {% endif %}>
+            {% if queued_videos %}
+                <h2 class="column-title">Queued</h2>
+                {% for video in queued_videos %}
+                    <article class="horizontal-video-entry">
+                        <a href="/c={{ video.channel.channel_id }}/v={{ video.video_id }}/" class="entry-link">
+                            <div class="video-entry-content">
+                                <img src="{{ video.thumbnail.url }}" alt="thumbnail" class="thumbnail">
+                                <div class="entry-text">
+                                    <p class="horizontal-title">{{ video.title }}</p>
+                                    <div class="horizontal-metadata">
+                                        <img src="{{ video.channel.profile_image.url }}" alt="pfp"
+                                             class="horizontal-avatar">
+                                        <div class="metadata-text">
+                                            <p href="youtube.com"
+                                               class="horizontal-channel">{{ video.channel.name }}</p>
+                                            <p class="horizontal-date">{{ video.upload_date|date:"Y-m-d" }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </article>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="horizontal-video-list" id="errored-videos" {% if not errored_videos %}style="display: none" {% endif %}>
+            {% if errored_videos %}
+                <h2 class="column-title">Errored</h2>
+                {% for video in errored_videos %}
+                    <article class="horizontal-video-entry">
+                        <a href="/c={{ video.channel.channel_id }}/v={{ video.video_id }}/" class="entry-link">
+                            <div class="video-entry-content">
+                                <img src="{{ video.thumbnail.url }}" alt="thumbnail" class="thumbnail">
+                                <div class="entry-text">
+                                    <p class="horizontal-title">{{ video.title }}</p>
+                                    <div class="horizontal-metadata">
+                                        <img src="{{ video.channel.profile_image.url }}" alt="pfp"
+                                             class="horizontal-avatar">
+                                        <div class="metadata-text">
+                                            <p href="youtube.com"
+                                               class="horizontal-channel">{{ video.channel.name }}</p>
+                                            <p class="horizontal-date">{{ video.upload_date|date:"Y-m-d" }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </article>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    <script src="{% static 'videomanager/javascript/queued_videos.js' %}"></script>
+{% endblock %}

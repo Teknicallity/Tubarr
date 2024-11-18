@@ -5,7 +5,11 @@
     <title>Tubarr Video Manager</title>
 
     {% load static %}
+    <link rel="icon" href="{% static 'videomanager/favicon.png' %}" sizes="48x48">
+    <link rel="apple-touch-icon" href="{% static 'videomanager/apple-touch-icon.png' %}" sizes="180x180">
     <link rel="stylesheet" href="{% static 'videomanager/stylesheets/header.css' %}">
+    <link rel="stylesheet" href="{% static 'videomanager/stylesheets/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'videomanager/stylesheets/loaders.css' %}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     {% block stylesheets %}{% endblock %}
 </head>
@@ -13,9 +17,15 @@
 <header>
     <div class="left-header">
         <a href="{% url 'videomanager:index' %}" class="home-link">Tubarr</a>
+        {% if DEMO_MODE %}<p class="demo-text">(Demo Mode)</p>{% endif %}
     </div>
     <div class="center-header">
-        <input type="text" placeholder="Search All" class="text-input">
+        <form action="/search/" method="get">
+            <label>
+                <input type="text" name="q" placeholder="Search All" class="text-input">
+            </label>
+            <input type="submit" class="search-button">
+        </form>
     </div>
     <div class="right-header">
         {#        <form action="" method="POST">#}
@@ -25,10 +35,25 @@
         <a href="{% url 'videomanager:add' %}" class="add-link">Add Content</a>
     </div>
 </header>
+<div class="sidebar">
+    <div class="side-links">
+        <div><a class="side-entry" href="/">Channels</a></div>
+        <div><a class="side-entry" href="{% url 'videomanager:all_videos' %}">All Videos</a></div>
+    </div>
+    <a href="{% url 'videomanager:queued_list' %}" class="queued-link">
+        <div class="side-status">
+            <div id="queued-url" style="display: none">{% url 'videomanager:queued_count' %}</div>
+            <div class="queued" id="queued-div"></div>
+            <div class="errored" id="errored-div"></div>
+        </div>
+    </a>
+</div>
 <div class="main-content-section">
     {% block maincontent %}
         <h2>Error: content cannot be loaded</h2>
     {% endblock %}
 </div>
+
+<script src="{% static 'videomanager/javascript/sidebar.js' %}"></script>
 </body>
 </html>

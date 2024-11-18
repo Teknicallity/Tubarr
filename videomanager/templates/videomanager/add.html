@@ -12,6 +12,7 @@
         {% csrf_token %}
 
         <h2>Add Content</h2>
+        {% if DEMO_MODE %}<p style="color: red">DEMO MODE ENABLED - No downloads will actually complete</p>{% endif %}
         <label>
             <input type="text" placeholder="URL" name="URL" id="url_input" required>
             <button type="submit">Submit</button>
@@ -20,8 +21,8 @@
 
     <div id="input_url_display"></div>
     <div id="error_display"></div>
-    <div class="confirmation">
-        <form id="confirmation_form" action="{% url 'videomanager:download' %}" method="POST">
+    <div class="confirmation" id="confirmation">
+        <form id="confirmation_form" action="{% url 'videomanager:download' %}" style="display: none" method="POST">
             {% csrf_token %}
             <div id="confirmation_input"></div>
         </form>
@@ -32,7 +33,7 @@
 
     <script>
         let add_url = {% url 'videomanager:add' %};
-        let csrf = {{ csrf_token }};
+        let csrf = {% csrf_token %};
     </script>
     <script src="{% static 'videomanager/javascript/add.js' %}"></script>
 

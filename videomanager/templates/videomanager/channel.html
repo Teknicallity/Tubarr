@@ -1,42 +1,55 @@
 {% extends "videomanager/base.html" %}
+{% load static %}
 
-{% block stylesheets %}{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'videomanager/stylesheets/channel_info.css' %}">
+    {% block inner_stylesheet %}
+    {% endblock %}
+{% endblock %}
 
 {% block maincontent %}
+    <div class="channel-header">
+        <div class="channel-decoration">
+            <img class="banner-image" src="{{ channel.banner_image.url }}" alt="">
+            <form id="delete_form" action="{{ request.path }}delete/">
+                {% csrf_token %}
+                <label>
+                    <button class="delete-button" type="submit">Delete Channel</button>
+                </label>
+            </form>
+            <div class="channel-info">
+                <img class="channel-pfp" src="{{ channel.profile_image.url }}" alt="">
+                <h1 class="channel-name">{{ channel.name }}</h1>
+            </div>
+        </div>
+        <div class="tab-row">
+            <div class="tabs">
+                <a class="tab" id="home-tab">
+                    <div>Home</div>
+                </a>
+                <a class="tab" id="videos-tab">
+                    <div>Videos</div>
+                </a>
+                <a class="tab" id="playlists-tab">
+                    <div>Playlists</div>
+                </a>
+            </div>
+        </div>
+    </div>
 
-    <p>Recent Videos:</p>
-    {% if video_list %}
-        <ul>
-            {% for video in video_list %}
-                {#            <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li> og#}
-                {#            <li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li> modified#}
-                {#            with namespacing #}
-                <li>
-                    <a href="{% url 'videomanager:video' video.channel.channel_id video.video_id %}">
-                        {{ video.title }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No videos available</p>
-    {% endif %}
-    <p>Recent Playlists:</p>
-    {% if playlist_list %}
-        <ul>
-            {% for playlist in playlist_list %}
-                {#            <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li> og#}
-                {#            <li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li> modified#}
-                {#            with namespacing #}
-                <li>
-                    <a href="{% url 'videomanager:playlist' playlist.channel.channel_id playlist.playlist_id %}">
-                        {{ playlist.name }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No playlists available</p>
-    {% endif %}
+    <div id="inner-content">
+        {% block inner_content %}
+        {% endblock %}
+    </div>
 
+    <script src="{% static 'videomanager/javascript/channel.js' %}" type="module"></script>
+    <script src="{% static 'videomanager/javascript/channel_tab_switcher.js' %}" type="module"></script>
+    <script>
+        const channelId = "{{ channel.channel_id }}"
+        const channelName = "{{ channel.name }}"
+        document.addEventListener("DOMContentLoaded", () => {
+            let activeTab = document.querySelector(`${activeTabId}`)
+            activeTab.click()
+        })
+    </script>
 {% endblock %}

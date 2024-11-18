@@ -1,0 +1,124 @@
+
+.video-page-content {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background-color: #ffffff; /* White background for content */
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+#video-page-content p {
+    margin: 0;
+}
+
+.video-channel-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid #d8d8d8;
+}
+
+.channel-profile-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.channel-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.video-info-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.video-info-top p {
+    align-self: flex-end;
+}
+
+.video-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.upload-date {
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #777;
+}
+
+#video {
+    text-align: center;
+}
+
+#video video {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    max-width: 100%;
+}
+
+#video img {
+    margin-top: 1rem;
+    max-width: 50%;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.description-title {
+    margin-bottom: 1rem;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid #d8d8d8;
+}
+
+.video-description {
+    font-size: 1rem;
+    color: #555;
+    white-space: pre-wrap;
+}
+
+form#delete_form {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.delete-button {
+    padding: 0.5rem 1.5rem;
+    background-color: #cd1f1f;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.delete-button:hover {
+    background-color: #b91b1b;
+}
+
+@media (max-width: 768px) {
+    #video-page-content {
+        padding: 1rem;
+    }
+
+    #video video {
+        width: 100%;
+    }
+
+    #video img {
+        max-width: 100%;
+    }
+
+    .delete-button {
+        width: 100%;
+    }
+}

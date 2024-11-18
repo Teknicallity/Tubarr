@@ -1,0 +1,139 @@
+* {
+    box-sizing: border-box;
+}
+
+.carousel {
+    position: relative;
+}
+
+.carousel-viewport {
+    width: 1880px;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    margin: auto;
+}
+
+.carousel-item {
+    width: 300px;
+}
+
+@media (max-width: 2250px) {
+    .carousel-viewport {
+        width: 1880px;
+    }
+
+    .carousel-item {
+        width: 300px;
+    }
+}
+
+@media (max-width: 2100px) {
+    .carousel-viewport {
+        width: 1570px;
+    }
+
+    .carousel-item {
+        width: 300px;
+    }
+}
+
+@media (max-width: 1790px) {
+    .carousel-viewport {
+        width: 1320px;
+    }
+
+    .carousel-item {
+        width: 250px;
+    }
+}
+
+@media (max-width: 1540px) {
+    .carousel-viewport {
+        width: 1050px;
+    }
+
+    .carousel-item {
+        width: 250px;
+    }
+}
+
+@media (max-width: 1280px) {
+    .carousel-viewport {
+        width: 850px;
+    }
+
+    .carousel-item {
+        width: 200px;
+    }
+}
+
+@media (max-width: 1060px) {
+    .carousel-viewport {
+        width: 640px;
+    }
+
+    .carousel-item {
+        width: 200px;
+    }
+}
+
+@media (max-width: 850px) {
+    .carousel-viewport {
+        width: 420px;
+    }
+
+    .carousel-item {
+        width: 200px;
+    }
+}
+@media (max-width: 680px) {
+    .carousel-viewport {
+        width: 420px;
+    }
+
+    .carousel-item {
+        width: 200px;
+    }
+}
+@media (max-width: 480px) {
+    .carousel-viewport {
+        width: 200px;
+    }
+
+    .carousel-item {
+        width: 200px;
+    }
+}
+
+/*@media (max-width: 510px) {*/
+/*    .carousel-viewport {*/
+/*        width: 250px;*/
+/*    }*/
+
+/*    .carousel-item {*/
+/*        width: 200px;*/
+/*    }*/
+/*}*/
+
+.carousel .carousel-track {
+    display: flex;
+    position: absolute;
+    overflow: hidden;
+    transition: 0.3s ease-in-out;
+    gap: 1em;
+}
+
+.video-carousel-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.carousel-control {
+    font-size: 1.2rem;
+    font-weight: bold;
+}

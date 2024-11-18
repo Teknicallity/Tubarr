@@ -24,6 +24,7 @@ function getUserInputUrl() {
 const url_input = document.querySelector('#url_input')
 const content_info = document.querySelector('#content_info');
 const confirmation_input = document.querySelector('#confirmation_input')
+const confirmation_form = document.getElementById('confirmation_form')
 let url
 document.querySelector('#content_input_form').addEventListener('submit', (event) => {
     event.preventDefault()
@@ -39,7 +40,7 @@ document.querySelector('#content_input_form').addEventListener('submit', (event)
     const urlDisplay = document.getElementById('input_url_display')
     urlDisplay.innerText = `${url}`
 
-    content_info.innerHTML = ''
+    content_info.innerHTML = `<div class="spinner"></div>`
 
     fetch('', {
         method: 'POST',
@@ -64,9 +65,8 @@ document.querySelector('#content_input_form').addEventListener('submit', (event)
                     content_info.innerHTML = `
                     <div id="video_info">
                         <img class="thumbnail" src=${info.thumbnail_url} alt="Video Thumbnail"> 
-                        <p class="title">${info.video_title}</p>
+                        <h3 class="title">${info.video_title}</h3>
                         <p class="channel">${info.channel_name}</p>
-                        <p class="date">${info.upload_date}</p>
                         <p class="description">${info.video_description}</p>
                     </div>
                     `;
@@ -74,8 +74,7 @@ document.querySelector('#content_input_form').addEventListener('submit', (event)
                     content_info.innerHTML = `
                     <div id="playlist_info">
                         <img class="thumbnail" src=${info.thumbnail_url} alt="Thumbnail">
-                        <p class="title">${info.playlist_name}</p>
-                        <img class="profile-pic" src='' alt="Channel Picture">
+                        <h3 class="title">${info.playlist_name}</h3>
                         <div class="info">
                             <p class="channel">${info.channel_name}</p>
                             <p class="video-count"># of videos: ${info.playlist_entry_count}</p>
@@ -85,7 +84,7 @@ document.querySelector('#content_input_form').addEventListener('submit', (event)
                 } else if (info.type === 'channel') {
                     content_info.innerHTML = `
                     <div id="channel_info">
-                        <p class="title"></p>
+                        <h3 class="title"></h3>
                         <img class="profile-pic" src="" alt="Channel Picture">
                         <div class="info">
                             <p class="video-count"></p>
@@ -94,8 +93,8 @@ document.querySelector('#content_input_form').addEventListener('submit', (event)
                     `
                 }
 
+                confirmation_form.style.display = 'block'
                 confirmation_input.innerHTML = `
-                    <input type="text" id="url_display" name="url" value="${url}" readonly>
                     <label class="confirmation_text">Download?</label>
                     <button type="submit">Yes</button>
                     <button type="reset">No</button>
