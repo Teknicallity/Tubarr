@@ -39,7 +39,7 @@ home_tab.addEventListener("click", () => {
         containerId: 'video-carousel-inner',
         prevButtonId: 'prev-video-btn',
         nextButtonId: 'next-video-btn',
-        apiEndpoint: '/api/videos/?page=1',
+        apiEndpoint: `/api/channels/${channelId}/videos/?page=1`,
         renderItem: video => `
         <article class="video-entry carousel-item">
             <a href="/c=${video.channel.channel_id}/v=${video.video_id}/" class="entry-link">
@@ -63,7 +63,7 @@ home_tab.addEventListener("click", () => {
         containerId: 'playlist-carousel-inner',
         prevButtonId: 'prev-playlist-btn',
         nextButtonId: 'next-playlist-btn',
-        apiEndpoint: '/api/playlists/?page=1',
+        apiEndpoint: `/api/channels/${channelId}/playlists/?page=1`,
         renderItem: playlist => `
         <article class="video-entry carousel-item">
             <a href="/c=${playlist.channel.channel_id}/p=${playlist.playlist_id}/" class="entry-link">
