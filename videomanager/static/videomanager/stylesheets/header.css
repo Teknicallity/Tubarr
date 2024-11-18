@@ -20,14 +20,13 @@ header{
     box-shadow: 0 2px 5px gray;
 }
 .left-header{
-    flex: 1;
     margin-left: 0.5rem;
     color: azure;
     font-weight: bold;
     font-size: 2rem;
 }
 .demo-text {
-    display: inline;
+    display: inline-block;
     font-size: 1rem;
 }
 .home-link{
@@ -37,21 +36,34 @@ header{
 }
 .center-header{
     text-align: center;
-    flex: 1;
+    display: inline;
 }
 .right-header{
-    flex: 1;
     margin-right: 0.5rem;
     text-align: right;
     color: azure;
+    display: inline;
 }
+
 .add-link{
     color: azure;
     text-decoration: none;
 }
 .text-input{
+    width: 100%;
+    max-width: 200px;
     padding: 0.5em 0.5em;
     font-size: 1rem;
+    border-radius: 4px;
+    border: none;
+}
+.search-button{
+    padding: 0.5rem 0.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    background-color: #c6c6c6;
 }
 .url-add-button{
     padding: 0.5em 0.5em;
@@ -66,5 +78,17 @@ header{
 @media (max-width: 810px){
     .main-content-section{
         margin-left: 0;
+    }
+}
+@media (max-width: 600px) {
+    .left-header {
+        font-size: 1.4rem;
+    }
+    .text-input {
+        padding: 0.5em 0.5em;
+        max-width: 100px;
+    }
+    .search-button {
+        padding: 0.5em 0.5em;
     }
 }
