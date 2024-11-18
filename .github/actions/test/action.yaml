@@ -1,0 +1,29 @@
+name: Test Code
+description: Reusable action for running tests
+
+inputs:
+  python-version:
+    description: Python version to use
+    required: true
+    default: 3.12.7
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m venv .venv
+        source .venv/bin/activate
+        pip install -r requirements.txt
+      shell: bash
+
+    - name: Run tests
+      run: |
+        source .venv/bin/activate
+        python3 manage.py test videomanager.tests
+      shell: bash

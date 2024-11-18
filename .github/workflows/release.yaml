@@ -7,7 +7,21 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]+-pre*'     # Pre-release tags
 
 jobs:
+  run_tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Run Test Action
+        uses: ./.github/actions/test
+        with:
+          python-version: 3.12.7
+
   github_publish:
+    needs: run_tests
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -30,6 +44,7 @@ jobs:
 
   dockerhub_publish:
     name: Push Docker image to Docker Hub
+    needs: run_tests
     runs-on: ubuntu-latest
     permissions:
       packages: write
