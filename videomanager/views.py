@@ -79,7 +79,15 @@ def video(request, channel_id, video_id):
 
     url = 'content/' + v.channel.channel_id + '/' + v.filename
     logger.debug(f'Video location url: {url}')
-    return render(request, "videomanager/video.html", {'DEMO_MODE': settings.DEMO_MODE, "video": v, "video_url": url})
+    return render(
+        request,
+        "videomanager/video.html",
+        {
+            'DEMO_MODE': settings.DEMO_MODE,
+            "video": v,
+            "video_url": url
+        }
+    )
 
 
 def add(request):

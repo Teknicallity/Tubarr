@@ -1,31 +1,44 @@
 {% extends "videomanager/base.html" %}
 {% load static %}
 
-{% block stylesheets %}{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'videomanager/stylesheets/video-player.css' %}">
+{% endblock %}
 
 {% block maincontent %}
-
-    <p>Video Name:</p>
-
-    {% if video %}
-        <p>{{ video.title }}</p>
-        <div id="video">
-            {% if video.file.url is not None %}
-                <video controls width="1000">
-                    <source src="{{ video.file.url }}">
-                </video>
-                <img src="{{ video.thumbnail.url }}" alt="thumbnail">
-            {% else %}
-                <p style="color: red; margin: 2rem 0 2rem 0">Cannot find video file</p>
+    <div class="video-page-content">
+        <div class="video-channel-info">
+            {% if video.channel %}
+                <img class="channel-profile-image" src="{{ video.channel.profile_image.url }}" alt="Channel Profile">
+                <h2 class="channel-name">{{ video.channel.name }}</h2>
             {% endif %}
         </div>
 
+        {% if video %}
+            <div class="video-info-top">
+                <p class="video-title">{{ video.title }}</p>
+                <p class="upload-date">{{ video.upload_date }}</p>
+            </div>
+
+            <div id="video">
+                {% if video.file.url is not None %}
+                    <video controls width="1000" poster="{{ video.thumbnail.url }}">
+                        <source src="{{ video.file.url }}">
+                    </video>
+                {% else %}
+                    <p style="color: red; margin: 2rem 0 2rem 0">Cannot find video file</p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="video-page-content">
+        <h3 class="description-title">Description</h3>
+        <p class="video-description">{{ video.description }}</p>
         <form id="delete_form" action="{{ request.path }}delete/">
             {% csrf_token %}
-            <label>
-                <button type="submit">Delete</button>
-            </label>
+            <button type="submit" class="delete-button">Delete</button>
         </form>
-    {% endif %}
+    </div>
 
 {% endblock %}
