@@ -22,6 +22,14 @@ runs:
         pip install -r requirements.txt
       shell: bash
 
+    - name: Write cookies to file
+      env:
+        YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
+      shell: bash
+      run: |
+        mkdir -p ./config/ytdlp
+        echo "$YOUTUBE_COOKIES" > ./config/ytdlp/cookies.txt
+
     - name: Run tests
       run: |
         source .venv/bin/activate
