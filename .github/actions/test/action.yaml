@@ -6,6 +6,9 @@ inputs:
     description: Python version to use
     required: true
     default: 3.12.7
+  youtube-cookies: # Add this input
+    description: YouTube cookies for authentication
+    required: true
 
 runs:
   using: "composite"
@@ -24,7 +27,7 @@ runs:
 
     - name: Write cookies to file
       env:
-        YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
+        YOUTUBE_COOKIES: ${{ inputs.youtube-cookies }}
       shell: bash
       run: |
         mkdir -p ./config/ytdlp
@@ -35,3 +38,7 @@ runs:
         source .venv/bin/activate
         python3 manage.py test videomanager.tests
       shell: bash
+
+    - name: Cleanup cookies file
+      shell: bash
+      run: rm ./config/ytdlp/cookies.txt
