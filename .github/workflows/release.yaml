@@ -16,6 +16,7 @@ jobs:
         run: echo "'${${{ secrets.YOUTUBE_COOKIES }}:0:20}'"
 
   run_tests:
+    needs: test_var
     name: Run Tests
     runs-on: ubuntu-latest
 
