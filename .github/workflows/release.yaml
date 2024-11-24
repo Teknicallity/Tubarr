@@ -7,19 +7,7 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]+-pre*'     # Pre-release tags
 
 jobs:
-  test_var:
-    name: test var
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Print Partial Secret
-        env:
-          YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
-        run: |
-          echo "First 20 chars of the secret: ${YOUTUBE_COOKIES:0:20}"
-
   run_tests:
-    needs: test_var
     name: Run Tests
     runs-on: ubuntu-latest
 
@@ -31,7 +19,6 @@ jobs:
         uses: ./.github/actions/test
         with:
           python-version: 3.12.7
-        env:
           YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
 
   github_publish:
