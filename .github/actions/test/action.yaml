@@ -32,7 +32,8 @@ runs:
       shell: bash
       run: |
         mkdir -p ./config/ytdlp
-        echo "$YOUTUBE_COOKIES" > ./config/ytdlp/cookies.txt
+        echo "$YOUTUBE_COOKIES" > ./config/ytdlp/basecookies.txt
+        cat ./config/ytdlp/basecookies.txt | base64 --decode > ./config/ytdlp/cookies.txt
 
     - name: Run tests
       run: |
