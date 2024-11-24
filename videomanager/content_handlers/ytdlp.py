@@ -31,6 +31,7 @@ class Ydl:
             'forceprint': True,
             'format': 'best',
             'quiet': True,
+            'cachedir': os.path.join(settings.CONFIG_DIR, 'ytdlp', 'cache'),
         }
         cookie_filepath = os.path.join(settings.CONFIG_DIR, 'ytdlp', 'cookies.txt')
         if os.path.isfile(cookie_filepath):
@@ -105,6 +106,7 @@ class Ydl:
             'paths': {'home': ydl_opts.download_path},
             'outtmpl': {'default': '[%(id)s]-%(title)s.%(ext)s'},
             'download_archive': os.path.join(settings.CONFIG_DIR, 'ytdlp', 'downloaded.txt'),
+            'cachedir': os.path.join(settings.CONFIG_DIR, 'ytdlp', 'cache'),
             # 'writethumbnail': True,  # writes to the given paths home directory, not thumbnails directory
         }
         cookie_filepath = os.path.join(settings.CONFIG_DIR, 'ytdlp', 'cookies.txt')
