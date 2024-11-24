@@ -31,9 +31,25 @@ runs:
           ${{ inputs.youtube-cookies }}
       shell: bash
       run: |
-        mkdir -p ./config/ytdlp
         echo "$YOUTUBE_COOKIES" > ./config/ytdlp/basecookies.txt
         cat ./config/ytdlp/basecookies.txt | base64 --decode > ./config/ytdlp/cookies.txt
+        mkdir -p ./config/ytdlp
+
+    - name: get env var
+      env:
+        YOUTUBE_COOKIES: |
+          ${{ inputs.youtube-cookies }}
+      shell: bash
+      run: |
+        echo "$YOUTUBE_COOKIES"
+
+    - name: debug 64cookie
+      shell: bash
+      run: cat ./config/ytdlp/basecookies.txt
+
+    - name: debug cookie
+      shell: bash
+      run: cat ./config/ytdlp/cookies.txt
 
     - name: Run tests
       run: |
