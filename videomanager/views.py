@@ -198,6 +198,9 @@ def search_view(request):
     search_size = min(MAX_AMOUNT, int(request.GET.get('size', DEFAULT_AMOUNT)))
     search_type = request.GET.get('type', DEFAULT_TYPE)
 
+    if search_query == '':
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
     # if search_type not in ALLOWED_TYPES:
     #     return Response(
     #         {'error': f'Invalid search type: {search_type}. Allowed values are {", ".join(ALLOWED_TYPES)}.'},
