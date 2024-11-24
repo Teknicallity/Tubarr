@@ -27,8 +27,7 @@ runs:
 
     - name: Write cookies to file
       env:
-        YOUTUBE_COOKIES: |
-          ${{ inputs.youtube-cookies }}
+        YOUTUBE_COOKIES: ${{ inputs.youtube-cookies }}
       shell: bash
       run: |
         mkdir -p ./config/ytdlp
@@ -37,8 +36,7 @@ runs:
 
     - name: get env var
       env:
-        YOUTUBE_COOKIES: |
-          ${{ inputs.youtube-cookies }}
+        YOUTUBE_COOKIES: ${{ inputs.youtube-cookies }}
       shell: bash
       run: |
         echo "$YOUTUBE_COOKIES"
