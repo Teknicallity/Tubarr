@@ -69,7 +69,15 @@ def playlist(request, channel_id, playlist_id):
     p = get_object_or_404(Playlist, playlist_id=playlist_id)
     video_list = list(Video.objects.filter(playlists__playlist_id=p.playlist_id))
     # return HttpResponse("Playlist: %s" % playlist_id)
-    return render(request, "videomanager/playlist.html", {'DEMO_MODE': settings.DEMO_MODE, "video_list": video_list})
+    return render(
+        request,
+        "videomanager/playlist.html",
+        {
+            'DEMO_MODE': settings.DEMO_MODE,
+            "playlist": p,
+            "video_list": video_list,
+        }
+    )
 
 
 def video(request, channel_id, video_id):
