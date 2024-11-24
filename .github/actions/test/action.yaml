@@ -31,9 +31,9 @@ runs:
           ${{ inputs.youtube-cookies }}
       shell: bash
       run: |
+        mkdir -p ./config/ytdlp
         echo "$YOUTUBE_COOKIES" > ./config/ytdlp/basecookies.txt
         cat ./config/ytdlp/basecookies.txt | base64 --decode > ./config/ytdlp/cookies.txt
-        mkdir -p ./config/ytdlp
 
     - name: get env var
       env:
