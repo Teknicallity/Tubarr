@@ -11,7 +11,7 @@ except:
     with open(os.path.join(CONFIG_DIR, "secretkey.txt"), 'w') as f:
         f.write(SECRET_KEY)
 
-DEBUG = False
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
 DEMO_MODE = os.getenv('DEMO_MODE', 'False').lower() == 'true'
 
