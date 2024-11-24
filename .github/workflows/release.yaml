@@ -7,6 +7,14 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]+-pre*'     # Pre-release tags
 
 jobs:
+  test_var:
+    name: test var
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: print
+        run: echo "'${${{ secrets.YOUTUBE_COOKIES }}:0:20}'"
+
   run_tests:
     name: Run Tests
     runs-on: ubuntu-latest
