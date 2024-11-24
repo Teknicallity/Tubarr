@@ -6,6 +6,9 @@ inputs:
     description: Python version to use
     required: true
     default: 3.12.7
+  youtube-cookies:
+    description: YouTube cookies for authentication
+    required: true
 
 runs:
   using: "composite"
@@ -23,24 +26,13 @@ runs:
       shell: bash
 
     - name: Write cookies to file
+      env:
+        YOUTUBE_COOKIES: ${{ inputs.youtube-cookies }}
       shell: bash
       run: |
         mkdir -p ./config/ytdlp
         echo "$YOUTUBE_COOKIES" > ./config/ytdlp/basecookies.txt
         cat ./config/ytdlp/basecookies.txt | base64 --decode > ./config/ytdlp/cookies.txt
-
-    - name: get env var
-      shell: bash
-      run: |
-        echo "'${YOUTUBE_COOKIES:0:20}'"
-
-    - name: debug 64cookie
-      shell: bash
-      run: cat ./config/ytdlp/basecookies.txt
-
-    - name: debug cookie
-      shell: bash
-      run: cat ./config/ytdlp/cookies.txt
 
     - name: Run tests
       run: |
@@ -50,4 +42,4 @@ runs:
 
     - name: Cleanup cookies file
       shell: bash
-      run: rm ./config/ytdlp/cookies.txt
+      run: rm -f ./config/ytdlp/cookies.txt ./config/ytdlp/basecookies.txt
