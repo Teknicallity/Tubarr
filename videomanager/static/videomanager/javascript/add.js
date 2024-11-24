@@ -21,6 +21,7 @@ function getUserInputUrl() {
     return $(this).find('input').val()
 }
 
+let reset_button;
 const url_input = document.querySelector('#url_input')
 const content_info = document.querySelector('#content_info');
 const confirmation_input = document.querySelector('#confirmation_input')
@@ -97,8 +98,14 @@ document.querySelector('#content_input_form').addEventListener('submit', (event)
                 confirmation_input.innerHTML = `
                     <label class="confirmation_text">Download?</label>
                     <button type="submit">Yes</button>
-                    <button type="reset">No</button>
+                    <button type="reset" id="reset_button">No</button>
                 `
+
+                document.getElementById('reset_button').addEventListener('click', (event) => {
+                    event.preventDefault();
+                    location.reload();
+                });
+
             }
 
 
