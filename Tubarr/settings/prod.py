@@ -13,7 +13,7 @@ except:
 
 DEBUG = False
 
-DEMO_MODE = os.getenv('DEMO_MODE', False)
+DEMO_MODE = os.getenv('DEMO_MODE', 'False').lower() == 'true'
 
 LOGGING = {
     'version': 1,
