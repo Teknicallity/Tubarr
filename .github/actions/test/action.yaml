@@ -31,8 +31,7 @@ runs:
       shell: bash
       run: |
         mkdir -p ./config/ytdlp
-        echo "$YOUTUBE_COOKIES" > ./config/ytdlp/cookies.txt
-        head ./config/ytdlp/cookies.txt
+        printf '%s' "$YOUTUBE_COOKIES" > ./config/ytdlp/cookies.txt
 
     - name: Run tests
       run: |
