@@ -39,7 +39,7 @@ runs:
         YOUTUBE_COOKIES: ${{ inputs.youtube-cookies }}
       shell: bash
       run: |
-        echo "$YOUTUBE_COOKIES"
+        echo "'${YOUTUBE_COOKIES:0:20}'"
 
     - name: debug 64cookie
       shell: bash
