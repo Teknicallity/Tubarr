@@ -19,7 +19,8 @@ jobs:
         uses: ./.github/actions/test
         with:
           python-version: 3.12.7
-          youtube-cookies: ${{ secrets.YOUTUBE_COOKIES }}
+          youtube-cookies: |
+            ${{ secrets.YOUTUBE_COOKIES }}
 
   github_publish:
     needs: run_tests

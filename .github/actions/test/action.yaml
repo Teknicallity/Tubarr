@@ -27,11 +27,12 @@ runs:
 
     - name: Write cookies to file
       env:
-        YOUTUBE_COOKIES: ${{ inputs.youtube-cookies }}
+        YOUTUBE_COOKIES: |
+          ${{ inputs.youtube-cookies }}
       shell: bash
       run: |
         mkdir -p ./config/ytdlp
-        printf '%s' "$YOUTUBE_COOKIES" > ./config/ytdlp/cookies.txt
+        echo "$YOUTUBE_COOKIES" > ./config/ytdlp/cookies.txt
 
     - name: Run tests
       run: |
