@@ -12,8 +12,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: print
-        run: echo "'${${{ secrets.YOUTUBE_COOKIES }}:0:20}'"
+      - name: Print Partial Secret
+        env:
+          YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
+        run: |
+          echo "First 20 chars of the secret: ${YOUTUBE_COOKIES:0:20}"
 
   run_tests:
     needs: test_var
