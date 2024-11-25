@@ -104,6 +104,8 @@ def add(request):
         err = ''
         attribute_dictionary = ''
 
+        logger.info(f'Requested url: {url}')
+
         content = ContentFactory.get_content_object(url)
         try:
             content.fill_info()
