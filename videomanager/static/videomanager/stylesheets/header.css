@@ -21,7 +21,7 @@ header{
 }
 .left-header{
     margin-left: 0.5rem;
-    color: azure;
+    color: white;
     font-weight: bold;
     font-size: 2rem;
 }
@@ -30,7 +30,7 @@ header{
     font-size: 1rem;
 }
 .home-link{
-    color: azure;
+    color: white;
     text-decoration: none;
     padding: 0.3em 0;
 }
@@ -41,12 +41,12 @@ header{
 .right-header{
     margin-right: 0.5rem;
     text-align: right;
-    color: azure;
+    color: white;
     display: inline;
 }
 
 .add-link{
-    color: azure;
+    color: white;
     text-decoration: none;
 }
 .text-input{
