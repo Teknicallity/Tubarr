@@ -15,7 +15,7 @@ Built on Django and utilizing yt-dlp for downloading videos, Tubarr offers a use
 ## Features
 
 - Download a single video, or a whole playlist.
-- View channels and their videos from the main page
+- View channels and their videos from the main page.
 
 ## Installation
 ### Docker Compose (Recommended)
@@ -46,7 +46,9 @@ docker run\
 
 ## Usage
 
-- Once running, visit "http://localhost:3020/", you can click "Add Content" in the upper right.
+- Channels and Videos can be quickly viewed by the sidebar links.
+- Channels have different sections: home for recent content, videos, and playlists.
+- Navigate to "Add Content" in the upper right.
 - This input can take either a YT video or playlist, displaying the information for either.
 - Once previewed, choose download in order to have the server download the content.
 - The video will be downloaded momentarily if it is the only item in queue.
@@ -64,10 +66,11 @@ docker run\
 4. Then run ```python3 manage.py migrate```
 5. To run the consumer ```python3 manage.py djangohuey```
 6. In another terminal, run ```python3 manage.py runserver```
-7. Visit "http://localhost:8000/channels"
+7. Visit "http://localhost:8000/"
 
 ## Screenshots
 
 ![Home Page](./documentation/screenshots/home-page.png?raw=true "Home Page")
 ![Add Page](./documentation/screenshots/add-page.png?raw=true "Add Page")
 ![Channel Page](./documentation/screenshots/channel-page.png?raw=true "Channel Page")
+![Video Page](./documentation/screenshots/video-page.png?raw=true "Video Page")
