@@ -58,6 +58,7 @@ docker run\
 
 - Multiple content entry selection with actions
 - A visible settings page
+- Yt-dlp cookie detector. Currently, if there is a file `ccokies.txt` under config/ytdlp, it will be passed to yt-dlp as the YouTube cookies.
 
 ## Development
 1. Make sure python 3.11 and pip are installed
