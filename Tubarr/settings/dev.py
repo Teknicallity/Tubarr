@@ -4,7 +4,7 @@ from .base import BASE_DIR, DATABASES
 
 DEBUG = True
 
-DEMO_MODE = True
+DEMO_MODE = False
 
 LOGGING = {
     'version': 1,

@@ -20,6 +20,9 @@
     padding: 0.5em;
     text-decoration: none;
     color: black;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .channel-icon-container{
     position: relative;
@@ -35,4 +38,5 @@
     font-size: 1.1rem;
     text-align: center;
     padding-bottom: 0.5em;
+    display: block;
 }
