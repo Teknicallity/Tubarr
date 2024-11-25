@@ -42,8 +42,7 @@
         {% endblock %}
     </div>
 
-    <script src="{% static 'videomanager/javascript/channel.js' %}" type="module"></script>
-    <script src="{% static 'videomanager/javascript/channel_tab_switcher.js' %}" type="module"></script>
+    <script src="{% static 'videomanager/javascript/channel_tab_switcher.js' %}"></script>
     <script>
         const channelId = "{{ channel.channel_id }}"
         const channelName = "{{ channel.name }}"
