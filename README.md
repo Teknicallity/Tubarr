@@ -25,7 +25,7 @@ With docker installed, make a compose file\
 version: "3"
 services:
   tubarr:
-    image: teknicallity/teknicallity:latest
+    image: teknicallity/tubarr:latest
     ports:
       - "3020:3020"
     restart: always
@@ -38,9 +38,9 @@ services:
 With docker installed, run
 ```
 docker run\
-    -p 3020:3020
-    -v ./config:/etc/tubarr/config
-    -v ./media:/etc/tubarr/media
+    -p 3020:3020\
+    -v ./config:/etc/tubarr/config\
+    -v ./media:/etc/tubarr/media\
     teknicallity/tubarr:latest
 ```
 
