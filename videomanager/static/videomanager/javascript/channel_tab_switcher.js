@@ -162,7 +162,7 @@ const gridDisplayAmount = 40
 home_tab.addEventListener("click", () => {
     console.log('homeclick')
     setActiveTab("#home-tab")
-    history.pushState("", `${channelName} Home`, `/c=${channelId}`)
+    // history.pushState("", `${channelName} Home`, `/c=${channelId}`)
     inner_content.innerHTML = `<p>Loading</p>`;
     inner_content.innerHTML = `
     <p>Recent Videos:</p>
@@ -236,7 +236,7 @@ home_tab.addEventListener("click", () => {
 })
 videos_tab.addEventListener("click", () => {
     setActiveTab("#videos-tab")
-    history.pushState("", `${channelName} Videos`, `/c=${channelId}/videos/`)
+    // history.pushState("", `${channelName} Videos`, `/c=${channelId}/videos/`)
     inner_content.innerHTML = `<p>Loading</p>`
     let initialUrl = `/api/channels/${channelId}/videos/?page_size=${gridDisplayAmount}`
 
@@ -276,7 +276,7 @@ videos_tab.addEventListener("click", () => {
 })
 playlists_tab.addEventListener("click", () => {
     setActiveTab("#playlists-tab")
-    history.pushState("", `${channelName} Playlists`, `/c=${channelId}/playlists/`)
+    // history.pushState("", `${channelName} Playlists`, `/c=${channelId}/playlists/`)
     inner_content.innerHTML = `<p>Loading</p>`
     let initialUrl = `/api/channels/${channelId}/playlists/?page_size=${gridDisplayAmount}`
 
