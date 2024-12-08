@@ -1,15 +1,22 @@
-import os
+import os, logging
 from django.core.management.utils import get_random_secret_key
 
 from .base import BASE_DIR, CONFIG_DIR
 
+logger = logging.getLogger(__name__)
+
 try:
     with open(os.path.join(CONFIG_DIR, "secretkey.txt")) as f:
         SECRET_KEY = f.read().strip()
-except:
+except FileNotFoundError:
     SECRET_KEY = get_random_secret_key()
-    with open(os.path.join(CONFIG_DIR, "secretkey.txt"), 'w') as f:
-        f.write(SECRET_KEY)
+    try:
+        with open(os.path.join(CONFIG_DIR, "secretkey.txt"), 'w') as f:
+            f.write(SECRET_KEY)
+    except FileNotFoundError as e:
+        logger.warning("Directory does not exist; unable to write secret key: %s", e)
+    except OSError as e:
+        logger.warning("Error writing secret key to file: %s", e)
 
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
