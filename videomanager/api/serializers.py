@@ -3,6 +3,8 @@ from videomanager.models import Video, Playlist, Channel
 
 
 class ChannelSerializer(serializers.ModelSerializer):
+    profile_image = serializers.SerializerMethodField()
+
     class Meta:
         model = Channel
         fields = [
@@ -10,6 +12,12 @@ class ChannelSerializer(serializers.ModelSerializer):
             'name',
             'profile_image',
         ]
+
+    @staticmethod
+    def get_profile_image(obj: Channel):
+        if obj.profile_image:
+            return obj.profile_image.url
+        return None
 
 
 class PlaylistSerializer(serializers.ModelSerializer):
@@ -33,6 +41,7 @@ class PlaylistSerializer(serializers.ModelSerializer):
 
 class VideoSerializer(serializers.ModelSerializer):
     channel = ChannelSerializer()
+    thumbnail = serializers.SerializerMethodField()
 
     class Meta:
         model = Video
@@ -43,3 +52,10 @@ class VideoSerializer(serializers.ModelSerializer):
             'channel',
             'thumbnail',
         ]
+
+    @staticmethod
+    def get_thumbnail(obj: Video):
+        # Only return the relative path, e.g., "/media/thumbnails/example.jpg"
+        if obj.thumbnail:
+            return obj.thumbnail.url
+        return None
