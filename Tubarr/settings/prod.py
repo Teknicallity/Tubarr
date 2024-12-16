@@ -22,7 +22,10 @@ DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
 DEMO_MODE = os.getenv('DEMO_MODE', 'False').lower() == 'true'
 
-CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+CSRF_TRUSTED_ORIGINS = (
+    os.getenv("CSRF_TRUSTED_ORIGINS", "")
+    .split(",") if os.getenv("CSRF_TRUSTED_ORIGINS", "").strip() else []
+)
 
 LOGGING = {
     'version': 1,
