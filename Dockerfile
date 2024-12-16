@@ -9,7 +9,7 @@ RUN apt-get -y update && apt-get -y install build-essential
 WORKDIR /build
 COPY requirements.txt requirements.txt
 
-RUN python -m venv --copies /build/.venv && \
+RUN python -m venv /build/.venv && \
     /build/.venv/bin/pip install --upgrade pip wheel --no-cache-dir && \
     /build/.venv/bin/pip install --no-cache-dir -r requirements.txt && \
     /build/.venv/bin/pip install --no-cache-dir 'uWSGI>=2.0.28'
@@ -36,6 +36,8 @@ COPY . .
 
 ENV VIRTUAL_ENV=/etc/tubarr/.venv
 ENV PATH=/etc/tubarr/.venv/bin:$PATH
+
+RUN /etc/tubarr/.venv/bin/python3 -m pip install 'supervisor>=4.2.5'
 
 RUN mkdir -p /etc/tubarr/config && \
     chown www-data:www-data /etc/tubarr/config && \
