@@ -4,8 +4,8 @@ TB_SERVER_PORT="${TB_SERVER_PORT:-3020}"
 
 mkdir -p /etc/tubarr/media
 mkdir -p /etc/tubarr/config
-chown -R www-data: /etc/tubarr/config
-chown -R www-data: /etc/tubarr/media
+chown -R www-data:www-data /etc/tubarr/config
+chown -R www-data:www-data /etc/tubarr/media
 
 chown www-data: /etc/tubarr
 
