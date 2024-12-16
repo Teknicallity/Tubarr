@@ -95,7 +95,15 @@ jobs:
         if: env.PRE_RELEASE == 'false'
         run: |
           docker tag teknicallity/tubarr:${{ github.ref_name }} teknicallity/tubarr:latest
+          docker tag teknicallity/tubarr:${{ github.ref_name }} teknicallity/tubarr:latest-pre
           docker push teknicallity/tubarr:latest
+          docker push teknicallity/tubarr:latest-pre
+
+      - name: Tag as latest-pre (only for pre-release)
+        if: env.PRE_RELEASE == 'true'
+        run: |
+          docker tag teknicallity/tubarr:${{ github.ref_name }} teknicallity/tubarr:latest-pre
+          docker push teknicallity/tubarr:latest-pre
 
       - name: Docker Hub Description
         uses: peter-evans/dockerhub-description@v4
