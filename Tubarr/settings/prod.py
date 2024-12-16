@@ -22,6 +22,8 @@ DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
 DEMO_MODE = os.getenv('DEMO_MODE', 'False').lower() == 'true'
 
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

@@ -29,10 +29,13 @@ services:
     ports:
       - "3020:3020"
     restart: always
+    environment:
+      CSRF_TRUSTED_ORIGINS: "*"
     volumes:
       - ./config:/etc/tubarr/config
       - ./media:/etc/tubarr/media
 ```
+Make sure to change the `CSRF_TRUSTED_ORIGINS` to match your domain, such as `https://mydomain.com`
 
 ### Docker Run
 With docker installed, run
