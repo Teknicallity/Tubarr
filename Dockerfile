@@ -37,7 +37,7 @@ COPY . .
 ENV VIRTUAL_ENV=/etc/tubarr/.venv
 ENV PATH=/etc/tubarr/.venv/bin:$PATH
 
-RUN /etc/tubarr/.venv/bin/python3 -m pip install 'supervisor>=4.2.5'
+RUN /etc/tubarr/.venv/bin/python3 -m pip install 'supervisor>=4.3.0'
 
 RUN mkdir -p /etc/tubarr/config && \
     chown www-data:www-data /etc/tubarr/config && \
